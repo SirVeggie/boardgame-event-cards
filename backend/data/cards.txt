@@ -1,0 +1,170 @@
+[
+	{
+		"title": "Lost Opportunity",
+		"description": "You refused to invest in that hot new stock\n\nOther players get 3 gold",
+		"game": "Roope Duck",
+		"type": "Curse"
+	},
+	{
+		"title": "Investment",
+		"description": "You invest in others' misfortune\n\nReceive the next batch of money that goes to the corner.",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Economic Instability",
+		"description": "Rotate wealth of all players clockwise/counter-clockwise randomly",
+		"game": "Roope Duck",
+		"type": "Chaotic"
+	},
+	{
+		"title": "Expropriation",
+		"description": "The community claims your assets\n\nAuction 2 shares",
+		"game": "Roope Duck",
+		"type": "Curse"
+	},
+	{
+		"title": "Black Friday",
+		"description": "You stay home gaming during black friday\n\nOther players can take 1 share from the bank",
+		"game": "Roope Duck",
+		"type": "Curse"
+	},
+	{
+		"title": "Property Theft",
+		"description": "Thankfully you're insured\n\nLose all shares, but gain 2 gold for each lost share",
+		"game": "Roope Duck",
+		"type": "Curse"
+	},
+	{
+		"title": "Shared Tooling",
+		"description": "Your \"friend\" lends you his tools\n\nChoose one secret card from another player.",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Gold Siphon",
+		"description": "You bought a brand new vacuum cleaner\n\nFor the next round all players will give you gold equal to the dice they throw (or equal sum of money)",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Identity Theft",
+		"description": "You're clearly bored with your current life\n\nSwap wealth with another player",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Science Funding",
+		"description": "The science lab you funded developed wormhole tech\n\nYou can place all players anywhere on the board individually",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Ooh Shiny!",
+		"description": "Laws won't stop you on your quest for treasure\n\nTake any 2 shares from other players (in total)",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Rewind",
+		"description": "You stole an experimental time machine from your friend's science lab\n\nSelect 5 cards from the discard pile and place them on top of the event pile in any order",
+		"game": "Roope Duck",
+		"type": "Chaotic"
+	},
+	{
+		"title": "Wet Shares",
+		"description": "You trip into a puddle with your shares\n\nThrow a die and lose an equal number of shares",
+		"game": "Roope Duck",
+		"type": "Curse"
+	},
+	{
+		"title": "Fool's Charity",
+		"description": "You give gifts to your friends in a drunken stupor\n\nAll other players may take 1 share from you of their choosing",
+		"game": "Roope Duck",
+		"type": "Curse"
+	},
+	{
+		"title": "Prickly Conscience",
+		"description": "Your friends return your gifts back to you\n\nAll other players give you 1 share of their choosing",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Bank Heist",
+		"description": "You take matters into your own hands\n\nTake 1 random share and 1 share of your choosing from the bank",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Bankruptcy",
+		"description": "You lose everything\n\n...and consider if life is worth living anymore",
+		"game": "Roope Duck",
+		"type": "Curse"
+	},
+	{
+		"title": "Sponsor",
+		"description": "Your intellectual genius has attracted a sponsor\n\nGain 100,000$ cash",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Nepotism",
+		"description": "Your daddy owns the bank\n\nYou may pay your debts to other players directly from the bank",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Full Rewind",
+		"description": "You \"borrowed\" your friend's completed time machine\n\nPlay any 2 cards from the discard pile",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Device Malfunction",
+		"description": "Your trusty vacuum cleaner broke and its contents are spilling out\n\nThrow a die and give other players gold (or cash) equal to its value",
+		"game": "Roope Duck",
+		"type": "Curse"
+	},
+	{
+		"title": "Asset Protection",
+		"description": "You hire menacing guards to deter your creditors\n\nYou cannot lose wealth for the next 3 rounds (excluding purchases)",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Time Freeze",
+		"description": "The time machine you appropriated from your friend exploded\n\nPlay 3 extra turns",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Investment Scam",
+		"description": "Start a pyramid scheme\n\nEach other player gives you 50,000$",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Time Skip",
+		"description": "Despite the numerous efforts of your friend, you steal his time machine once again\n\nDraw 5 cards from the event pile and play 2 of them",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	},
+	{
+		"title": "Financial Advice",
+		"description": "Your friends trust you to manage their shares\n\nReorganize the shares of all players without changing their amount",
+		"game": "Roope Duck",
+		"type": "Chaotic"
+	},
+	{
+		"title": "Fair Trade",
+		"description": "I don't see anything wrong with this...\n\nSwap any 4 shares of your choosing between you and another player",
+		"game": "Roope Duck",
+		"type": "Chaotic"
+	},
+	{
+		"title": "Autopilot",
+		"description": "The AI you invested in finally works\n\nChoose any die value between 1-12 on your next turn (no ability on 7 or more)",
+		"game": "Roope Duck",
+		"type": "Blessing"
+	}
+]

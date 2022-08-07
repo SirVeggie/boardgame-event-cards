@@ -1,0 +1,22 @@
+[
+	{
+		"name": "Terraforming Mars",
+		"types": [
+			"Terraform",
+			"Politics",
+			"Random"
+		],
+		"color": "#d44f08",
+		"background": "url(https://cdn1.epicgames.com/spt-assets/5199b206e46947ebad5e5c282e95776f/terraforming-mars-offer-1j70f.jpg)"
+	},
+	{
+		"name": "Roope Duck",
+		"types": [
+			"Blessing",
+			"Curse",
+			"Chaotic"
+		],
+		"color": "#d9b502",
+		"background": "url(https://images.cdn.yle.fi/image/upload/f_auto,fl_progressive/q_88/w_620,h_349,c_fill,g_faces/w_620/v1522837173/13-3-7568861.jpg)"
+	}
+]
