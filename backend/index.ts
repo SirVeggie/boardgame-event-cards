@@ -22,6 +22,11 @@ app.get('/api/test', (req, res) => {
     res.send('Hello world');
 });
 
+app.get('/api/exit', (req, res) => {
+    res.send('Exiting server');
+    process.exit(0);
+});
+
 //====| routers |====//
 
 app.use(cardPath, cardRouter);
