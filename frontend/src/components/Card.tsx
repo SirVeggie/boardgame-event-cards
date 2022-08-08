@@ -34,7 +34,6 @@ export function Card(p: Props) {
 
 const useStyles = createUseStyles({
   card: (props: Props) => ({
-    fontSize: 'min(2vw, 100%)',
     display: 'flex',
     position: 'relative',
     flexDirection: 'column',
