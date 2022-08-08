@@ -30,13 +30,13 @@ app.use(gamePath, gameRouter);
 //====| static files |====//
 
 app.get('*', (req, res, next) => {
-    let path = (req as any).params['0'];
+    const path = (req as any).params['0'];
     if (path.includes('/app/')) {
         res.sendFile(`${__dirname}/index.html`);
     } else {
         next();
     }
-})
+});
 
 //====| middleware |====//
 
