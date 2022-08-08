@@ -14,6 +14,7 @@ export type CardType = {
 };
 
 export type Session = {
+    name: string;
     game: string;
     deck: string[];
     discard: string[];

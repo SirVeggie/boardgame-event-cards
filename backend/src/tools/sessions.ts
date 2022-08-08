@@ -19,15 +19,15 @@ export function addSession(session: Session): Session {
     return res;
 }
 
-export function removeSession(game: string): void {
-    const index = obj.sessions.findIndex(x => x.game === game);
+export function removeSession(name: string): void {
+    const index = obj.sessions.findIndex(x => x.name === name);
     if (index === -1)
         throw userError('Session not found');
     obj.sessions.splice(index, 1);
 }
 
 export function updateSession(session: Session): Session {
-    const index = obj.sessions.findIndex(x => x.game === session.game);
+    const index = obj.sessions.findIndex(x => x.name === session.name);
     if (index === -1)
         throw userError('Session not found');
     const res = validateSession(overwriteSession(session, obj.sessions[index]));

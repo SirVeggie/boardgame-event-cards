@@ -60,6 +60,7 @@ export function validateGame(game: GameInfo): GameInfo {
 
 export function validateSession(session: Session): Session {
     const newSession = {
+        name: session.name?.trim(),
         game: session.game?.trim(),
         deck: session.deck?.map(x => x.trim()),
         discard: session.discard?.map(x => x.trim()),
@@ -69,6 +70,8 @@ export function validateSession(session: Session): Session {
         }))
     };
 
+    if (!newSession.name)
+        throw userError('Name cannot be empty');
     if (!newSession.game)
         throw userError('Game cannot be empty');
     if (!newSession.deck)
@@ -95,6 +98,7 @@ export function validateSession(session: Session): Session {
 
 export function overwriteSession(session: Partial<Session>, current: Session): Session {
     const newSession = {
+        name: session.name ?? current.name,
         game: session.game ?? current.game,
         deck: session.deck ?? current.deck,
         discard: session.discard ?? current.discard,
