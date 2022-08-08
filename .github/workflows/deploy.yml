@@ -21,9 +21,7 @@ jobs:
           git fetch
           git reset --hard origin/master
           git status
-          # npm run prod
-          npm -v
-          node -v
+          npm run prod
     - name: Notification
       uses: fjogeleit/http-request-action@v1
       with:
