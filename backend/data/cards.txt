@@ -172,5 +172,35 @@
 		"description": "You suck ass",
 		"game": "Terraforming Mars",
 		"type": "Random"
+	},
+	{
+		"title": "Cry",
+		"description": "You lose",
+		"game": "Terraforming Mars",
+		"type": "Terraform"
+	},
+	{
+		"title": "Laugh",
+		"description": "You win",
+		"game": "Terraforming Mars",
+		"type": "Politics"
+	},
+	{
+		"title": "Despair",
+		"description": "You die",
+		"game": "Terraforming Mars",
+		"type": "Random"
+	},
+	{
+		"title": "Walk Home",
+		"description": "You leave in peace",
+		"game": "Terraforming Mars",
+		"type": "Politics"
+	},
+	{
+		"title": "You Fly To Moon",
+		"description": "Life on earth is so 2022",
+		"game": "Terraforming Mars",
+		"type": "Terraform"
 	}
 ]
