@@ -26,6 +26,15 @@ export function removeCard(title: string): void {
     obj.cards.splice(index, 1);
 }
 
+export function updateCard(card: CardType): CardType {
+    const index = obj.cards.findIndex(x => x.title === card.title);
+    if (index === -1)
+        throw userError('Card not found');
+    const res = validateCard(card);
+    obj.cards[index] = res;
+    return res;
+}
+
 export async function loadCards() {
     obj.cards = await loadJson(cardLocation) ?? [];
 }

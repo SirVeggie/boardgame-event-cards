@@ -4,11 +4,12 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { cardRouter } from './src/routers/cardRouter';
 import { errorHandler, unknownEndpoint } from './src/middleware';
-import { cardPath, gamePath } from 'shared';
+import { cardPath, gamePath, sessionPath } from 'shared';
 import { gameRouter } from './src/routers/gameRouter';
 import { loadCards } from './src/tools/cards';
 import { loadGames } from './src/tools/games';
 import { pcNotification } from './src/tools/notify';
+import { sessionRouter } from './src/routers/sessionRouter';
 
 const app = express();
 
@@ -32,6 +33,7 @@ app.get('/api/exit', (req, res) => {
 
 app.use(cardPath, cardRouter);
 app.use(gamePath, gameRouter);
+app.use(sessionPath, sessionRouter);
 
 //====| static files |====//
 

@@ -26,6 +26,15 @@ export function removeGame(name: string): void {
     obj.games.splice(index, 1);
 }
 
+export function updateGame(game: GameInfo): GameInfo {
+    const index = obj.games.findIndex(x => x.name === game.name);
+    if (index === -1)
+        throw userError('Game not found');
+    const res = validateGame(game);
+    obj.games[index] = res;
+    return res;
+}
+
 export async function loadGames() {
     obj.games = await loadJson(gameLocation) ?? [];
 }

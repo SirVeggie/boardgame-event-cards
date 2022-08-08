@@ -13,6 +13,18 @@ export type CardType = {
     description: string;
 };
 
+export type Session = {
+    game: string;
+    deck: string[];
+    discard: string[];
+    players: Player[];
+};
+
+export type Player = {
+    name: string;
+    hand: string[];
+};
+
 export type NotificationType = {
     id: string;
     type: NotificationClass;
