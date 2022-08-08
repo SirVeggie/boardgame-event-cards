@@ -8,6 +8,7 @@ import { cardPath, gamePath } from 'shared';
 import { gameRouter } from './src/routers/gameRouter';
 import { loadCards } from './src/tools/cards';
 import { loadGames } from './src/tools/games';
+import { pcNotification } from './src/tools/notify';
 
 const app = express();
 
@@ -52,6 +53,8 @@ app.use(errorHandler);
 
 loadCards();
 loadGames();
+
+pcNotification('Event cards started');
 
 const PORT = process.env.PORT || 3001;
 app.listen(PORT, () => {
