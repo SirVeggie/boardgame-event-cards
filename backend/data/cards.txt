@@ -166,5 +166,11 @@
 		"description": "The AI you invested in finally works\n\nChoose any die value between 1-12 on your next turn (no ability on 7 or more)",
 		"game": "Roope Duck",
 		"type": "Blessing"
+	},
+	{
+		"title": "Test Card",
+		"description": "You suck ass",
+		"game": "Terraforming Mars",
+		"type": "Random"
 	}
 ]
