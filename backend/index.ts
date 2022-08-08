@@ -39,7 +39,7 @@ app.use(sessionPath, sessionRouter);
 
 app.get('*', (req, res, next) => {
     const path = (req as any).params['0'];
-    if (path.includes('/app/')) {
+    if (!path.includes('/api/')) {
         res.sendFile(`${__dirname}/index.html`);
     } else {
         next();
