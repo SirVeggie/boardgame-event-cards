@@ -1,36 +1,55 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { uuid } from 'shared';
 import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
 import { Button } from '../components/Button';
+import { useKeyEvent } from './useKeyEvent';
 
 export function useSelect(label: string, options: string[], className?: string) {
   const s = useStyles();
   const defaultValue = options[0] ?? '';
   const [value, setValue] = useState(defaultValue);
   const [open, setOpen] = useState(false);
+  const index = useRef(0);
+  const downKey = useKeyEvent('arrowdown');
+  const upKey = useKeyEvent('arrowup');
 
   if (options.length !== new Set(options).size) {
     throw new Error('useSelect: options must not contain duplicates');
   }
-  
+
+  if (downKey.pressed && index.current < options.length - 1 && open) {
+    index.current = Math.min(index.current + 1, options.length - 1);
+  } else if (upKey.pressed && index.current > 0 && open) {
+    index.current = Math.max(index.current - 1, 0);
+  }
+
   if (!options.some(x => x === value))
     setValue(defaultValue);
 
+  const setDropdown = (state: boolean) => {
+    setOpen(state);
+    if (state && !open) {
+      index.current = 0;
+    }
+  };
+  
   const reset = () => {
     setValue(defaultValue);
   };
-
+  
   const click: React.MouseEventHandler<HTMLButtonElement> = e => {
     e.preventDefault();
-    setOpen(!open);
+    setDropdown(!open);
   };
+  
   const focus: React.FocusEventHandler<HTMLButtonElement> = () => {
-    setOpen(true);
+    setDropdown(true);
   };
+  
   const blur: React.FocusEventHandler<HTMLDivElement> = e => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
-      setOpen(false);
+      setDropdown(false);
     }
   };
 
@@ -46,7 +65,7 @@ export function useSelect(label: string, options: string[], className?: string) 
         className={cx(s.button, className)}
       />
       <div className={cx(s.drop, open && 'open')}>
-        {options.map(option => <SelectButton key={option} option={option} />)}
+        {options.map((option, i) => <SelectButton key={option} option={option} focus={i === index.current} />)}
       </div>
     </div>
   );
@@ -66,17 +85,24 @@ export function useSelect(label: string, options: string[], className?: string) 
       setValue(p.option);
       setOpen(false);
     };
-    
+
     return (
-      <button onClick={click}>
+      <button autoFocus={p.focus} onClick={click} className='dropdown-option'>
         {p.option}
       </button>
     );
   }
 }
 
+function setFocus(index: number) {
+  setTimeout(() => {
+    (document.getElementsByClassName('dropdown-option')[index] as any)?.focus();
+  }, 0);
+}
+
 type ButtonProps = {
   option: string;
+  focus?: boolean;
 };
 
 const useStyles = createUseStyles({
@@ -97,6 +123,7 @@ const useStyles = createUseStyles({
     boxSizing: 'border-box',
     maxHeight: 'calc(180px + var(--border) * 2)',
     overflowY: 'auto',
+    zIndex: 1,
 
     '&.open': {
       display: 'flex',
@@ -116,7 +143,7 @@ const useStyles = createUseStyles({
       '&:hover': {
         backgroundColor: '#f5f5f5',
       },
-      
+
       '&:focus:not(:hover)': {
         backgroundColor: '#f8f8ff',
       },

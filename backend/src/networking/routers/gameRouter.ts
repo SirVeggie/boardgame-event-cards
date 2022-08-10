@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addGame, getGames, removeGame, saveGames } from '../tools/games';
+import { addGame, getGames, removeGame, saveGames } from '../../tools/games';
 
 export const gameRouter = Router();
 

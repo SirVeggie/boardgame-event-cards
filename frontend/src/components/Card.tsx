@@ -1,9 +1,10 @@
 import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
-import { CardType } from 'shared/src/types';
+import { CardType } from 'shared';
 import { CSSProperties } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from '../store';
+import { titleShade } from '../tools/cssConst';
 
 type Props = {
   card: CardType;
@@ -37,9 +38,10 @@ const useStyles = createUseStyles({
     display: 'flex',
     position: 'relative',
     flexDirection: 'column',
-    width: '300px',
+    minWidth: 300,
+    maxWidth: 350,
     color: '#333',
-    background: `linear-gradient(100deg, ${props.color}55, ${props.color}), white`,
+    background: titleShade(props.color ?? 'grey'),
     borderRadius: '10px',
     boxShadow: `0px 3px 10px ${props.color}aa`,
     boxSizing: 'border-box',

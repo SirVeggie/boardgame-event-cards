@@ -6,6 +6,7 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { Container } from '../components/Container';
 import { FormBase } from '../components/FormBase';
+import { HeaderStrip } from '../components/HeaderStrip';
 import { useInput } from '../hooks/useInput';
 import { useNotification } from '../hooks/useNotification';
 import { useRefresh } from '../hooks/useRefresh';
@@ -49,6 +50,12 @@ export function AddCard() {
   return (
     <Container className={s.container}>
       <Background bg={game.background} />
+      
+      <HeaderStrip
+        title='Sessions'
+        button={<Button text='Back' onClick={() => navigate('/')} />}
+      />
+      
       <div className={s.layout}>
         <FormBase onSubmit={submit}>
           {titleField}
@@ -57,19 +64,17 @@ export function AddCard() {
           <Button className={s.button} text='Create' />
         </FormBase>
 
-        <div style={{ marginBottom: 20 }}>
+        <div>
           <Card card={{ title, description, type, game: game.name }} />
         </div>
       </div>
-      <Button text='Back' onClick={back} />
     </Container>
   );
 }
 
 const useStyles = createUseStyles({
   container: {
-    alignItems: 'center',
-    height: '100vh',
+    paddingBottom: 20,
   },
   
   layout: {

@@ -1,7 +1,7 @@
 import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
 import { useNotification } from '../hooks/useNotification';
-import { NotificationType } from 'shared/src/types';
+import { NotificationType } from 'shared';
 
 export type NotificationProps = {
   notification: NotificationType;

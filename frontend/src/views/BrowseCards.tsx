@@ -1,16 +1,16 @@
 import { useState } from 'react';
 import { createUseStyles } from 'react-jss';
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { CardType } from 'shared/src/types';
 import { Background } from '../components/Background';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { ConfirmationModal } from '../components/ConfirmationModal';
 import { Container } from '../components/Container';
+import { HeaderStrip } from '../components/HeaderStrip';
+import { useGame } from '../hooks/useGame';
 import { useNotification } from '../hooks/useNotification';
 import { useRefresh } from '../hooks/useRefresh';
-import { RootState } from '../store';
 import { removeCard } from '../tools/database';
 import { NotFound } from './NotFound';
 
@@ -19,11 +19,7 @@ export function BrowseCards() {
   const notify = useNotification();
   const refresh = useRefresh();
   const navigate = useNavigate();
-  const gameName = decodeURIComponent(useParams().game ?? '');
-  const games = useSelector((state: RootState) => state.games);
-  const game = games.find(x => x.name === gameName);
-  const cards = useSelector((state: RootState) => state.cards)
-    .filter(card => card.game === game?.name);
+  const [game, cards] = useGame();
   const [modal, setModal] = useState(false);
   const [modalData, setModalData] = useState('');
 
@@ -61,7 +57,10 @@ export function BrowseCards() {
       </ConfirmationModal>
       <Background bg={game.background} />
 
-      <Button text='Back' onClick={() => navigate('/')} className={s.back} />
+      <HeaderStrip
+        title={game.name}
+        button={<Button text='Back' onClick={() => navigate('/')} />}
+      />
       
       {!cards.length && <div className={s.empty}>Looks empty...</div>}
       <div className={s.cards}>
@@ -78,7 +77,7 @@ export function BrowseCards() {
 
 const useStyles = createUseStyles({
   container: {
-    padding: '50px 0',
+    paddingBottom: 50,
   },
 
   empty: {
@@ -93,6 +92,11 @@ const useStyles = createUseStyles({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: '10px',
+    justifyContent: 'center',
+    
+    '& > *': {
+      flex: '1 1 300px',
+    },
   },
 
   spacer: {
@@ -111,9 +115,5 @@ const useStyles = createUseStyles({
     borderColor: '#d33',
     position: 'relative',
     right: 0,
-  },
-  
-  back: {
-    marginBottom: 20,
   },
 });

@@ -1,5 +1,5 @@
 import { createUseStyles } from 'react-jss';
-import { Session } from 'shared/src/types';
+import { Session } from 'shared';
 
 type Props = {
   session: Session,

@@ -5,6 +5,7 @@ import { Button } from '../components/Button';
 import { Card } from '../components/Card';
 import { Container } from '../components/Container';
 import { FormBase } from '../components/FormBase';
+import { HeaderStrip } from '../components/HeaderStrip';
 import { Tag } from '../components/Tag';
 import { useInput } from '../hooks/useInput';
 import { useNotification } from '../hooks/useNotification';
@@ -37,6 +38,12 @@ export function AddGame() {
   return (
     <Container className={s.container}>
       <Background bg={background} />
+
+      <HeaderStrip
+        title='Sessions'
+        button={<Button text='Back' onClick={() => navigate('/')} />}
+      />
+
       <div className={s.layout}>
         <FormBase onSubmit={submit}>
           {nameField}
@@ -58,26 +65,23 @@ export function AddGame() {
           }} color={color} style={{ float: 'right' }} />
         </div>
       </div>
-      
-      <Button text='Back' onClick={() => navigate('/')} />
     </Container>
   );
 }
 
 const useStyles = createUseStyles({
   container: {
-    alignItems: 'center',
-    height: '100vh',
+    paddingBottom: 20,
   },
-  
+
   layout: {
     display: 'flex',
     flexWrap: 'wrap',
-    
+
     '& > :first-child': {
       marginRight: '20px',
       marginBottom: '20px'
-    }
+    },
   },
 
   tags: {

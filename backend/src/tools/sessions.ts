@@ -1,5 +1,4 @@
-import { overwriteSession, userError, validateSession } from 'shared';
-import { Session } from 'shared/src/types';
+import { overwriteSession, Session, userError, validateSession } from 'shared';
 import { loadJson, saveJson } from './jsonFiles';
 
 const obj = {

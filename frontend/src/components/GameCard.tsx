@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { GameInfo } from 'shared/src/types';
+import { GameInfo } from 'shared';
 import { useNotification } from '../hooks/useNotification';
 import { useRefresh } from '../hooks/useRefresh';
 import { RootState } from '../store';

@@ -1,6 +1,5 @@
 import { useDispatch, useSelector } from 'react-redux';
-import { uuid } from 'shared';
-import { NotificationClass, NotificationType } from 'shared/src/types';
+import { NotificationClass, NotificationType, uuid } from 'shared';
 import { notificationActions } from '../reducers/notificationReducer';
 import { RootState } from '../store';
 

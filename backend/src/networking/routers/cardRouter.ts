@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addCard, getCards, removeCard, saveCards } from '../tools/cards';
+import { addCard, getCards, removeCard, saveCards } from '../../tools/cards';
 
 export const cardRouter = Router();
 

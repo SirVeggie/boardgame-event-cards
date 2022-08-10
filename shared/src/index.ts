@@ -1,6 +1,8 @@
 import { v1 } from 'uuid';
 import { CardType, GameInfo, Session } from './types';
 
+export * from './types';
+
 export class UserError extends Error {
     constructor(message: string) {
         super(message);
@@ -62,6 +64,7 @@ export function validateSession(session: Session): Session {
     const newSession = {
         name: session.name?.trim(),
         game: session.game?.trim(),
+        host: session.host?.trim(),
         deck: session.deck?.map(x => x.trim()),
         discard: session.discard?.map(x => x.trim()),
         players: session.players?.map(x => ({
@@ -74,6 +77,8 @@ export function validateSession(session: Session): Session {
         throw userError('Name cannot be empty');
     if (!newSession.game)
         throw userError('Game cannot be empty');
+    if (!newSession.host)
+        throw userError('Host cannot be empty');
     if (!newSession.deck)
         throw userError('Deck cannot be null');
     if (!newSession.discard)
@@ -100,6 +105,7 @@ export function overwriteSession(session: Partial<Session>, current: Session): S
     const newSession = {
         name: session.name ?? current.name,
         game: session.game ?? current.game,
+        host: session.host ?? current.host,
         deck: session.deck ?? current.deck,
         discard: session.discard ?? current.discard,
         players: session.players ? current.players.map(x => {

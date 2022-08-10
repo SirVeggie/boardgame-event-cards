@@ -1,5 +1,4 @@
-import { userError, validateCard } from 'shared';
-import { CardType } from 'shared/src/types';
+import { userError, validateCard, CardType } from 'shared';
 import { loadJson, saveJson } from './jsonFiles';
 
 const obj = {

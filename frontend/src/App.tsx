@@ -8,6 +8,7 @@ import { BrowseCards } from './views/BrowseCards';
 import { Game } from './views/Game';
 import { Games } from './views/Games';
 import { NotFound } from './views/NotFound';
+import { Sessions } from './views/Sessions';
 
 export function App() {
   const refresh = useRefresh();
@@ -23,6 +24,7 @@ export function App() {
         <Route path='/' element={<Games />} />
         <Route path='/new' element={<AddGame />} />
         <Route path='/:game' element={<Game />} />
+        <Route path='/:game/:session' element={<Game />} />
         <Route path='/:game/new' element={<AddCard />} />
         <Route path='/:game/cards' element={<BrowseCards />} />
         <Route path='*' element={<NotFound />} />

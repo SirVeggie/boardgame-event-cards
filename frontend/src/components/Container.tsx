@@ -1,5 +1,6 @@
 import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
+import { contMinWidth } from '../tools/cssConst';
 
 type Props = {
   children: React.ReactNode;
@@ -30,8 +31,9 @@ const useStyles = createUseStyles({
       minWidth: 700,
       maxWidth: 1000,
       boxSizing: 'border-box',
+      '--media-width': '700px',
 
-      '@media (max-width: 700px)': {
+      [`@media (max-width: ${contMinWidth})`]: {
         minWidth: 'calc(100%)',
       }
     },

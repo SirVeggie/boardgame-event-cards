@@ -1,5 +1,4 @@
-import { userError, validateGame } from 'shared';
-import { GameInfo } from 'shared/src/types';
+import { GameInfo, userError, validateGame } from 'shared';
 import { loadJson, saveJson } from './jsonFiles';
 
 const obj = {

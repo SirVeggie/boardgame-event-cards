@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addSession, getSessions, removeSession, saveSessions, updateSession } from '../tools/sessions';
+import { addSession, getSessions, removeSession, saveSessions, updateSession } from '../../tools/sessions';
 
 export const sessionRouter = Router();
 
