@@ -87,17 +87,11 @@ export function useSelect(label: string, options: string[], className?: string) 
     };
 
     return (
-      <button autoFocus={p.focus} onClick={click} className='dropdown-option'>
+      <button tabIndex={-1} autoFocus={p.focus} onClick={click} className='dropdown-option'>
         {p.option}
       </button>
     );
   }
-}
-
-function setFocus(index: number) {
-  setTimeout(() => {
-    (document.getElementsByClassName('dropdown-option')[index] as any)?.focus();
-  }, 0);
 }
 
 type ButtonProps = {
