@@ -4,5 +4,5 @@ export function getProjectDir() {
 }
 
 export function getBuildDir() {
-    return `${getProjectDir()}/build`;
+    return `${getProjectDir()}/backend/build`;
 }
