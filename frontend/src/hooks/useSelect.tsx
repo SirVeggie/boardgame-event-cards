@@ -4,19 +4,26 @@ import cx from 'classnames';
 import { createUseStyles } from 'react-jss';
 import { Button } from '../components/Button';
 
-export function useSelect(label: string, options: string[], className?: string) {
+type Options = {
+  className?: string;
+  ref?: React.MutableRefObject<any>;
+};
+
+export function useSelect(label: string, values: string[], initial?: string, options?: Options) {
   const s = useStyles();
-  const defaultValue = options[0] ?? '';
+  values = values.length ? values : ['(none)'];
+  const defaultValue = initial ?? values[0] ?? '';
   const [value, setValue] = useState(defaultValue);
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(0);
-  const ref = useRef<any>();
+  let ref = useRef<any>();
+  ref = options?.ref ?? ref;
 
-  if (options.length !== new Set(options).size) {
+  if (values.length !== new Set(values).size) {
     throw new Error('useSelect: options must not contain duplicates');
   }
 
-  if (!options.some(x => x === value))
+  if (!values.some(x => x === value))
     setValue(defaultValue);
 
   //#region handlers
@@ -26,10 +33,16 @@ export function useSelect(label: string, options: string[], className?: string) 
       setIndex(0);
   };
 
+  const set = (value: string) => {
+    if (!values.includes(value))
+      throw new Error(`useSelect: invalid value: ${value}`);
+    setValue(value);
+  };
+
   const reset = () => {
     setValue(defaultValue);
   };
-  
+
   const focusButton = () => {
     ref.current.focus();
   };
@@ -44,6 +57,10 @@ export function useSelect(label: string, options: string[], className?: string) 
       setDropdown(true);
   };
 
+  const focusElement = () => {
+    options?.ref?.current?.focus();
+  };
+
   const blur: React.FocusEventHandler<HTMLDivElement> = e => {
     if (!e.currentTarget.contains(e.relatedTarget)) {
       setDropdown(false);
@@ -53,31 +70,27 @@ export function useSelect(label: string, options: string[], className?: string) 
 
   const id = uuid();
   const field = (
-    <div className={s.select} onBlur={blur}>
+    <div key={label} className={s.select} onBlur={blur}>
       <label htmlFor={id}>{label}</label>
       <Button
         tabIndex={open ? -1 : undefined}
-        innerRef={ref}
+        innerRef={options?.ref}
         id={id}
         onClick={click}
         onFocus={focus}
         text={value}
-        className={cx(s.button, className)}
+        className={cx(s.button, options?.className)}
       />
       <div className={cx(s.drop, open && 'open')}>
-        {options.map((option, i) => <SelectButton key={option} option={option} focus={i === index} />)}
+        {values.map((option, i) => <SelectButton key={option} option={option} focus={i === index} />)}
       </div>
     </div>
   );
 
   return [
-    {
-      ...field,
-      value,
-      reset
-    },
+    { ...field, value, reset, set, focus },
     value
-  ] as [JSX.Element & { value: string, reset: () => void; }, string];
+  ] as [JSX.Element & { value: string, reset: typeof reset, set: typeof set, focus: typeof focusElement; }, string];
 
   function SelectButton(p: ButtonProps) {
     const click = (e: any) => {
@@ -86,14 +99,20 @@ export function useSelect(label: string, options: string[], className?: string) 
       setDropdown(false);
       focusButton();
     };
-    
+
     const onKey: React.KeyboardEventHandler<HTMLButtonElement> = e => {
       if (e.key === 'Escape') {
+        e.stopPropagation();
+        e.preventDefault();
         setDropdown(false);
         focusButton();
       } else if (e.key === 'ArrowDown') {
-        setIndex(Math.min(index + 1, options.length - 1));
+        e.stopPropagation();
+        e.preventDefault();
+        setIndex(Math.min(index + 1, values.length - 1));
       } else if (e.key === 'ArrowUp') {
+        e.stopPropagation();
+        e.preventDefault();
         setIndex(Math.max(index - 1, 0));
       }
     };
@@ -116,7 +135,7 @@ const useStyles = createUseStyles({
     ':where(&)': {
       position: 'relative',
     },
-    
+
     '& > :where(label)': {
       display: 'block',
       marginBottom: '5px',

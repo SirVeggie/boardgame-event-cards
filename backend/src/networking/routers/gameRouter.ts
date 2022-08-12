@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { addGame, getGames, removeGame, saveGames } from '../../tools/games';
+import { addGame, getGames, removeGame, saveGames, updateGame } from '../../tools/games';
 
 export const gameRouter = Router();
 
@@ -11,6 +11,12 @@ gameRouter.post('/', (req, res) => {
     const game = addGame(req.body);
     saveGames();
     res.status(201).send(game);
+});
+
+gameRouter.put('/', (req, res) => {
+    const game = updateGame(req.body);
+    saveGames();
+    res.status(200).send(game);
 });
 
 gameRouter.delete('/:name', (req, res) => {

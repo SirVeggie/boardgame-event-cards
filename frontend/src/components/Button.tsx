@@ -1,6 +1,6 @@
 import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 type Props = {
   text: string;
@@ -18,17 +18,24 @@ type Props = {
 export function Button(p: Props) {
   const s = useStyles();
   const [down, setDown] = useState(false);
+  const [timeout, setTimeoutId] = useState<any>();
+  
+  useEffect(() => {
+    return () => clearTimeout(timeout);
+  }, [timeout]);
 
   const mouseDown: React.MouseEventHandler<HTMLButtonElement> = () => {
     setDown(true);
-    setTimeout(() => {
+    const id = setTimeout(() => {
       setDown(false);
     }, 200);
+    setTimeoutId(id);
   };
 
   const focus: React.FocusEventHandler<HTMLButtonElement> = e => {
     if (down) {
       setDown(false);
+      clearTimeout(timeout);
     } else {
       p.onFocus && p.onFocus(e);
     }

@@ -13,14 +13,14 @@ sessionRouter.post('/', (req, res) => {
     res.status(201).send(session);
 });
 
+sessionRouter.put('/', (req, res) => {
+    const session = updateSession(req.body);
+    saveSessions();
+    res.status(200).send(session);
+});
+
 sessionRouter.delete('/:game', (req, res) => {
     removeSession(decodeURIComponent(req.params.game));
     saveSessions();
     res.status(204).end();
-});
-
-sessionRouter.put('/:game', (req, res) => {
-    const session = updateSession(req.body);
-    saveSessions();
-    res.status(200).send(session);
 });

@@ -44,6 +44,7 @@ const useStyles = createUseStyles({
 
     '&.hidden': {
       opacity: 0,
+      pointerEvents: 'none',
     },
   },
   

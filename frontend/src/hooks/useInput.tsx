@@ -3,10 +3,15 @@ import cx from 'classnames';
 import { uuid } from 'shared';
 import { createUseStyles } from 'react-jss';
 
-export function useInput(label: string, type?: string, className?: string) {
-  const defaultValue = type === 'number' ? 0
+type Options = {
+  className?: string;
+  ref?: React.MutableRefObject<any>;
+};
+
+export function useInput(label: string, type?: string, initial?: string, options?: Options) {
+  const defaultValue = initial ?? (type === 'number' ? 0
     : type === 'color' ? '#000000'
-      : '';
+      : '');
   const s = useStyles();
   const [value, setValue] = useState(defaultValue);
 
@@ -18,29 +23,39 @@ export function useInput(label: string, type?: string, className?: string) {
     setValue(defaultValue);
   };
 
+  const set = (value: string) => {
+    setValue(value);
+  };
+
+  const focus = () => {
+    options?.ref?.current?.focus();
+  };
+
   const id = uuid();
   const field = (
-    <div className={s.input}>
+    <div className={s.input} key={label}>
       <label htmlFor={id}>{label}</label>
       {type === 'textarea' ? <textarea
         id={id}
         onChange={onChange}
         value={value}
-        className={cx(className)}
+        ref={options?.ref}
+        className={cx(options?.className)}
       /> : <input
         id={id}
         type={type}
         onChange={onChange}
         value={value}
-        className={cx(className)}
+        ref={options?.ref}
+        className={cx(options?.className)}
       />}
     </div>
   );
 
   return [
-    { ...field, value, reset },
+    { ...field, value, reset, set, focus },
     value
-  ] as [JSX.Element & { value: string, reset: () => void; }, string];
+  ] as [JSX.Element & { value: string, reset: typeof reset, set: typeof set, focus: typeof focus; }, string];
 }
 
 const useStyles = createUseStyles({
@@ -66,7 +81,7 @@ const useStyles = createUseStyles({
     '& > :where(input)': {
       height: '25px',
     },
-    
+
     '& > :where(label)': {
       display: 'block',
       marginBottom: '5px',

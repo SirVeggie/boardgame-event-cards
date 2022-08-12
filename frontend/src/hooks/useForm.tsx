@@ -1,25 +1,40 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { Button } from '../components/Button';
 import { FormBase } from '../components/FormBase';
+import { Toggle } from '../components/Toggle';
 import { useInput } from './useInput';
+import { useSelect } from './useSelect';
 
 export type FieldInfo = {
   type: string;
   className?: string;
 };
 
-export type FormResult<T extends string> = Record<T, string>;
-export function useForm<T extends string>(title: string, fields: Record<T, FieldInfo>) {
+export type SelectInfo = {
+  type: 'select';
+  className?: string;
+  options?: string[];
+};
+
+export type FormError = {
+  message: string;
+  cause: unknown;
+};
+
+export type FormValues<T extends string> = Record<T, string>;
+export function useForm<T extends string>(title: string, fields: Record<T, FieldInfo | SelectInfo>, onSubmit: (data: FormValues<T>) => boolean | void) {
   const s = useStyles();
   // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
-  const [submitFunc, setSubmitFunc] = useState<(data: FormResult<T>) => void>(() => { });
   const [open, setOpen] = useState(false);
+  const ref = useRef<any>();
 
   const keys = Object.keys(fields) as T[];
-  const states = keys.reduce((obj, key) => {
-    const field = fields[key] as FieldInfo;
-    const [input] = useInput(key, field.type, field.className);
+  const states = keys.reduce((obj, key, i) => {
+    const field = fields[key] as FieldInfo | SelectInfo;
+    const [input] = field.type === 'select'
+      ? useSelect(key, (field as SelectInfo).options ?? [], undefined, { className: field.className, ref: i === 0 ? ref : undefined })
+      : useInput(key, field.type, undefined, { className: field.className, ref: i === 0 ? ref : undefined });
 
     const res = {
       ...obj,
@@ -34,16 +49,33 @@ export function useForm<T extends string>(title: string, fields: Record<T, Field
     });
   };
 
-  const submit = (): FormResult<T> => {
+  const submit = () => {
     const data = keys.reduce((obj, key) => {
       const value = states[key].value;
       return {
         ...obj,
         [key]: value
       };
-    }, {} as FormResult<T>);
-    submitFunc(data);
+    }, {} as FormValues<T>);
+
+    try {
+      onSubmit(data);
+    } catch (e) {
+      return { message: '', cause: e } as FormError;
+    }
+
+    setOpen(false);
     return data;
+  };
+
+  const setOpenCustom = (state: boolean, initialValues?: FormValues<T>) => {
+    if (initialValues)
+      keys.forEach(key => states[key].set(initialValues[key]));
+    setOpen(state);
+
+    setTimeout(() => {
+      states[keys[0]].focus();
+    }, 100);
   };
 
   const formSubmit = (e: React.FormEvent<HTMLFormElement>) => {
@@ -51,18 +83,33 @@ export function useForm<T extends string>(title: string, fields: Record<T, Field
     submit();
   };
 
+  const parentClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    if (e.target === e.currentTarget) {
+      setOpen(false);
+    }
+  };
+
+  const input = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    e.preventDefault();
+    submit();
+  };
 
   const component = (
-    <div className={s.modal}>
-      <FormBase onSubmit={formSubmit} className={s.content}>
-        <h2>{title}</h2>
-        {keys.map(key => states[key])}
-        <Button text='Submit' />
-      </FormBase>
-    </div>
+    <Toggle on={open}>
+      <div className={s.modal} onClick={parentClick}>
+        <FormBase onSubmit={formSubmit} className={s.content} glass>
+          <h2>{title}</h2>
+          {keys.map(key => states[key])}
+          <Button text='Submit' onClick={input} />
+        </FormBase>
+      </div>
+    </Toggle>
   );
 
-  return { submit, setSubmit: setSubmitFunc, component, isOpen: open, setOpen, reset };
+  return { submit, component, isOpen: open, setOpen: setOpenCustom, reset };
 }
 
 const useStyles = createUseStyles({
@@ -71,8 +118,12 @@ const useStyles = createUseStyles({
     to: { opacity: 1 },
   },
   '@keyframes dropIn': {
-    from: { transform: 'translateY(-1rem)' },
-    to: { transform: 'translateY(0)' },
+    from: {
+      transform: 'translateY(-1rem)'
+    },
+    to: {
+      transform: 'translateY(0)'
+    },
   },
 
   modal: {
@@ -87,10 +138,17 @@ const useStyles = createUseStyles({
     justifyContent: 'center',
     alignItems: 'start',
     zIndex: 2000,
+    maxHeight: '100vh',
     animation: '$fadeIn 350ms ease',
   },
-  
+
   content: {
-    
+    position: 'relative',
+    top: '20%',
+    animation: '$dropIn 350ms ease',
+
+    '& > h2': {
+      margin: 0,
+    },
   }
 });

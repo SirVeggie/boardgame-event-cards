@@ -21,6 +21,12 @@ export function addCard(card: CardType): Promise<CardType> {
         .catch(handleError);
 }
 
+export function updateCard(card: CardType): Promise<CardType> {
+    return axios.put(cardPath, card)
+        .then(res => res.data)
+        .catch(handleError);
+}
+
 export function removeCard(title: string): Promise<void> {
     return axios.delete(`${cardPath}/${encodeURIComponent(title)}`)
         .catch(handleError);

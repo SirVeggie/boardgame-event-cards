@@ -8,10 +8,11 @@ import { Card } from '../components/Card';
 import { ConfirmationModal } from '../components/ConfirmationModal';
 import { Container } from '../components/Container';
 import { HeaderStrip } from '../components/HeaderStrip';
+import { useForm } from '../hooks/useForm';
 import { useGame } from '../hooks/useGame';
 import { useNotification } from '../hooks/useNotification';
 import { useRefresh } from '../hooks/useRefresh';
-import { removeCard } from '../tools/database';
+import { removeCard, updateCard } from '../tools/database';
 import { NotFound } from './NotFound';
 
 export function BrowseCards() {
@@ -22,6 +23,25 @@ export function BrowseCards() {
   const [game, cards] = useGame();
   const [modal, setModal] = useState(false);
   const [modalData, setModalData] = useState('');
+  
+  const form = useForm('Edit card', {
+    title: { type: 'text' },
+    description: { type: 'textarea' },
+    type: { type: 'select', options: game?.types ?? [] },
+  }, data => {
+    updateCard({ ...data, game: game?.name ?? '' }).then(() => {
+      notify.create('success', 'Card updated successfully');
+      refresh();
+    }).catch(err => {
+      notify.create('error', err.error);
+    });
+  });
+
+  const startEdit = (card: CardType) => {
+    return () => {
+      form.setOpen(true, card);
+    };
+  };
 
   const onDelete = (card: CardType) => {
     return () => {
@@ -48,6 +68,7 @@ export function BrowseCards() {
     return <NotFound />;
   return (
     <Container className={s.container}>
+      {form.component}
       <ConfirmationModal warning yesNo
         title='Delete card?'
         open={modal}
@@ -61,12 +82,12 @@ export function BrowseCards() {
         title={game.name}
         button={<Button text='Back' onClick={() => navigate('/')} />}
       />
-      
+
       {!cards.length && <div className={s.empty}>Looks empty...</div>}
       <div className={s.cards}>
         {cards.map(card => <Card key={card.title} card={card}>
           <div className={s.spacer}>
-            <div />
+            <Button text='Edit' onClick={startEdit(card)} />
             <Button text='Delete' onClick={onDelete(card)} className={s.delete} />
           </div>
         </Card>)}
@@ -93,19 +114,12 @@ const useStyles = createUseStyles({
     flexWrap: 'wrap',
     gap: '10px',
     justifyContent: 'center',
-    
-    // '& > *': {
-      // flex: '1 1 300px',
-    // },
   },
 
   spacer: {
     display: 'flex',
     flexDirection: 'row',
-
-    '& > div': {
-      flexGrow: 1,
-    }
+    justifyContent: 'space-between',
   },
 
   delete: {
