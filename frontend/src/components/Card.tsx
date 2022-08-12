@@ -20,32 +20,42 @@ export function Card(p: Props) {
   const s = useStyles({ ...p, color: p.color ?? game?.color ?? 'grey' });
 
   return (
-    <div className={cx('card', s.card, p.className)} style={p.style}>
-      <div className={s.titleBox}>
-        <h1 className={s.title}>{p.card.title || '(Empty)'}</h1>
-        <div className={s.type}>{p.card.type}</div>
-      </div>
-      <div className={s.inner}>
-        <span>{p.card.description}</span>
-        {p.children}
+    <div className={s.back}>
+      <div className={cx('card', s.card, p.className)} style={p.style}>
+        <div className={s.titleBox}>
+          <h1 className={s.title}>{p.card.title || '(Empty)'}</h1>
+          <div className={s.type}>{p.card.type}</div>
+        </div>
+        <div className={s.inner}>
+          <span>{p.card.description}</span>
+          {p.children}
+        </div>
       </div>
     </div>
   );
 }
 
 const useStyles = createUseStyles({
-  card: (props: Props) => ({
-    display: 'flex',
+  back: (p: Props) => ({
+    backdropFilter: 'blur(7.5px) contrast(50%)',
     position: 'relative',
-    flexDirection: 'column',
     minWidth: 300,
     maxWidth: 350,
-    color: '#333',
-    background: titleShade(props.color ?? 'grey'),
     borderRadius: '10px',
-    boxShadow: `0px 3px 10px ${props.color}aa`,
-    boxSizing: 'border-box',
     overflow: 'hidden',
+    boxShadow: `0px 3px 10px ${p.color}aa`,
+    boxSizing: 'border-box',
+    flex: '1 1 300px',
+  }),
+  
+  card: (p: Props) => ({
+    display: 'flex',
+    width: '100%',
+    height: '100%',
+    flexDirection: 'column',
+    color: '#111',
+    background: titleShade(p.color ?? 'grey'),
+    opacity: 0.75,
   }),
 
   titleBox: {
@@ -60,6 +70,7 @@ const useStyles = createUseStyles({
   },
 
   inner: {
+    color: '#000',
     position: 'relative',
     display: 'flex',
     flexDirection: 'column',
@@ -71,7 +82,7 @@ const useStyles = createUseStyles({
     padding: '20px',
     whiteSpace: 'pre-line',
     flexGrow: 1,
-    
+
     '& > span': {
       flexGrow: 1,
     },

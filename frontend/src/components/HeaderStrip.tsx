@@ -31,6 +31,7 @@ const useStyles = createUseStyles({
     marginBottom: 20,
     marginTop: 50,
     transition: 'margin 0.2s ease',
+    backdropFilter: 'blur(3.5px)',
     
     [`@media (max-width: ${contMaxWidth})`]: {
       marginTop: 20,

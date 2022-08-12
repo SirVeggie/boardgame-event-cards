@@ -8,8 +8,11 @@ type Props = {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
   onFocus?: React.FocusEventHandler<HTMLButtonElement>;
   onBlur?: React.FocusEventHandler<HTMLButtonElement>;
+  autoFocus?: boolean;
   disabled?: boolean;
   id?: string;
+  innerRef?: React.MutableRefObject<any>;
+  tabIndex?: number;
 };
 
 export function Button(p: Props) {
@@ -33,6 +36,7 @@ export function Button(p: Props) {
 
   return (
     <button
+      autoFocus={p.autoFocus}
       id={p.id}
       className={cx(s.button, p.className)}
       onMouseDown={mouseDown}
@@ -40,6 +44,8 @@ export function Button(p: Props) {
       onFocus={focus}
       onBlur={p.onBlur}
       disabled={p.disabled}
+      tabIndex={p.tabIndex}
+      ref={p.innerRef}
     >{p.text}</button>
   );
 }
@@ -70,7 +76,7 @@ const useStyles = createUseStyles({
       '&:active': {
         filter: 'brightness(103%)',
       },
-      
+
       '&:disabled': {
         filter: 'contrast(20%)',
         border: 'none',

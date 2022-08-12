@@ -1,42 +1,36 @@
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export function useKeyEvent(targetKey: string, repeat?: boolean) {
-    const [, updateState] = useState(null as any);
-    const forceUpdate = useCallback(() => updateState({}), []);
-    const pressed = useRef(false);
-    const down = useRef(false);
+    const [{ down, pressed, count }, setState] = useState({ down: false, pressed: false, count: 0 });
+    // console.log(`count: ${count} | down: ${down} | pressed: ${pressed}`);
 
-    const oldPressed = pressed.current;
-    if (pressed.current) {
-        pressed.current = false;
+    if (pressed) {
+        setState({ down, pressed: false, count: count + 1 });
     }
 
-    const downHandler = (event: KeyboardEvent) => {
-        if (event.key.toLocaleLowerCase() === targetKey.toLocaleLowerCase()) {
+    const downCallback = useCallback((e: KeyboardEvent) => {
+        if (e.key.toLocaleLowerCase() === targetKey.toLocaleLowerCase()) {
 
-            if (repeat || !down.current) {
-                down.current = true;
-                pressed.current = true;
-                forceUpdate();
+            if (repeat || !down) {
+                setState({ down: true, pressed: true, count: count + 1 });
             }
         }
-    };
+    }, [repeat, down]);
 
-    const upHandler = (event: KeyboardEvent) => {
-        if (event.key.toLocaleLowerCase() === targetKey.toLocaleLowerCase()) {
-            down.current = false;
-            forceUpdate();
+    const upCallback = (e: KeyboardEvent) => {
+        if (e.key.toLocaleLowerCase() === targetKey.toLocaleLowerCase()) {
+            setState({ down: false, pressed, count: count + 1 });
         }
     };
 
     useEffect(() => {
-        window.addEventListener('keydown', downHandler);
-        window.addEventListener('keyup', upHandler);
+        window.addEventListener('keydown', downCallback);
+        window.addEventListener('keyup', upCallback);
 
         return () => {
-            window.removeEventListener('keydown', downHandler);
-            window.removeEventListener('keyup', upHandler);
+            window.removeEventListener('keydown', downCallback);
+            window.removeEventListener('keyup', upCallback);
         };
-    }, []);
-    return { down: down.current, pressed: oldPressed };
+    }, [downCallback, upCallback]);
+    return { down, pressed };
 }

@@ -3,7 +3,8 @@ import { WebEvent } from 'shared';
 
 export function useLocalSocket(data: WebEvent, onmessage?: (data: any, ws: WebSocket) => void) {
     const host = window.location.host;
-    const url = host.includes('localhost') ? 'ws://localhost:3001' : `ws://${host}`;
+    const secure = window.location.protocol === 'https:' ? 's' : '';
+    const url = host.includes('localhost') ? 'ws://localhost:3001' : `ws${secure}://${host}`;
     return useWebSocket(url, ws => ws.send(JSON.stringify(data)), onmessage);
 }
 

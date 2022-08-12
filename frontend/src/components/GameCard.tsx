@@ -6,10 +6,11 @@ import { GameInfo } from 'shared';
 import { useNotification } from '../hooks/useNotification';
 import { useRefresh } from '../hooks/useRefresh';
 import { RootState } from '../store';
+import { titleShade } from '../tools/cssConst';
 import { removeGame } from '../tools/database';
 import { Button } from './Button';
 import { ConfirmationModal } from './ConfirmationModal';
-import Toggle from './Toggle';
+import { Toggle } from './Toggle';
 
 type Props = {
   game: GameInfo;
@@ -35,7 +36,7 @@ export function GameCard(p: Props) {
     if (p.noButtons) return;
     navigate(`/${p.game.name}/cards`);
   };
-  
+
   const play = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
     navigate(`/${p.game.name}`);
@@ -64,48 +65,56 @@ export function GameCard(p: Props) {
   };
 
   return (
-    <div className={s.card}>
-      <ConfirmationModal warning yesNo
-        title='Delete game'
-        text='Are you sure you want to delete this game?'
-        open={modal}
-        onInput={confirmDelete}
-      >
-        <GameCard {...p} noButtons />
-      </ConfirmationModal>
+    <div className={s.back}>
+      <div className={s.card}>
+        <ConfirmationModal warning yesNo
+          title='Delete game'
+          text='Are you sure you want to delete this game?'
+          open={modal}
+          onInput={confirmDelete}
+        >
+          <GameCard {...p} noButtons />
+        </ConfirmationModal>
 
-      <h1 onClick={click}>{p.game.name}</h1>
-      <div className={s.stats}>
-        <span>Total cards: {cards.length}</span>
-        {amountByTypes.map(x => <span key={x.type}>{x.type}: {x.amount}</span>)}
-      </div>
-      <Toggle enabled={!p.noButtons}>
-        <div className={s.buttons}>
-          <Button text='Play' onClick={play} disabled={cards.length < 5} />
-          <Button text='Add Cards' onClick={newCards} />
-          <Button text='Delete' onClick={deleteGame} className={s.delete} />
+        <h1 onClick={click}>{p.game.name}</h1>
+        <div className={s.stats}>
+          <span>Total cards: {cards.length}</span>
+          {amountByTypes.map(x => <span key={x.type}>{x.type}: {x.amount}</span>)}
         </div>
-      </Toggle>
+        <Toggle on={!p.noButtons}>
+          <div className={s.buttons}>
+            <Button text='Play' onClick={play} disabled={cards.length < 5} />
+            <Button text='Add Cards' onClick={newCards} />
+            <Button text='Delete' onClick={deleteGame} className={s.delete} />
+          </div>
+        </Toggle>
+      </div>
     </div>
   );
 }
 
 const useStyles = createUseStyles({
-  card: (props: Props) => ({
-    display: 'flex',
-    flexDirection: 'column',
-    boxShadow: `0px 4px 10px ${props.game.color}55`,
+  back: (p: Props) => ({
+    backdropFilter: 'blur(5px) brightness(2)',
+    boxShadow: `0px 4px 10px ${p.game.color}55`,
     borderRadius: '10px',
-    backgroundColor: '#fff',
     overflow: 'hidden',
     minWidth: '250px',
     flexGrow: 1,
-    
+  }),
+
+  card: (p: Props) => ({
+    opacity: 0.75,
+    display: 'flex',
+    flexDirection: 'column',
+    backgroundColor: '#fff',
+    flexGrow: 1,
+
     '& > h1': {
       margin: 0,
       padding: '10px 15px',
-      cursor: props.noButtons ? 'initial' : 'pointer',
-      background: `linear-gradient(100deg, ${props.game.color}55, ${props.game.color})`,
+      cursor: p.noButtons ? 'initial' : 'pointer',
+      background: titleShade(p.game.color),
     }
   }),
 

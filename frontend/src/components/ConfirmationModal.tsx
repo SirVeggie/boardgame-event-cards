@@ -1,6 +1,6 @@
 import { createUseStyles } from 'react-jss';
 import cx from 'classnames';
-import Toggle from './Toggle';
+import { Toggle } from './Toggle';
 
 export type ConfirmationModalProps = {
   open: boolean;
@@ -35,19 +35,19 @@ export function ConfirmationModal(p: ConfirmationModalProps) {
   };
 
   return (
-    <Toggle enabled={p.open}>
+    <Toggle on={p.open}>
       <div className={s.modal} onClick={parentClick}>
         <div className={cx(s.content, p.warning && 'warning')}>
           <h2>{title}</h2>
           {message && <p>{message}</p>}
 
-          <Toggle enabled={!!p.children}>
+          <Toggle on={!!p.children}>
             <div className={s.custom}>
               {p.children}
             </div>
           </Toggle>
 
-          <Toggle enabled={!p.noButtons}>
+          <Toggle on={!p.noButtons}>
             <div className={s.buttons}>
               <button className={cx(s.button, p.warning ? 'danger' : 'accept')} onClick={input(true)}>{p.yesNo ? 'Yes' : 'Ok'}</button>
               <button className={s.button} onClick={input(false)}>{p.yesNo ? 'No' : 'Cancel'}</button>

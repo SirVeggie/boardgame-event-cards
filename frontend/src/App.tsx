@@ -23,7 +23,7 @@ export function App() {
       <Routes>
         <Route path='/' element={<Games />} />
         <Route path='/new' element={<AddGame />} />
-        <Route path='/:game' element={<Game />} />
+        <Route path='/:game' element={<Sessions />} />
         <Route path='/:game/:session' element={<Game />} />
         <Route path='/:game/new' element={<AddCard />} />
         <Route path='/:game/cards' element={<BrowseCards />} />

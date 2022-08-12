@@ -45,7 +45,7 @@ export function AddGame() {
       />
 
       <div className={s.layout}>
-        <FormBase onSubmit={submit}>
+        <FormBase onSubmit={submit} glass>
           {nameField}
           {colorField}
           {backgroundField}

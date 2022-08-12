@@ -94,9 +94,9 @@ const useStyles = createUseStyles({
     gap: '10px',
     justifyContent: 'center',
     
-    '& > *': {
-      flex: '1 1 300px',
-    },
+    // '& > *': {
+      // flex: '1 1 300px',
+    // },
   },
 
   spacer: {

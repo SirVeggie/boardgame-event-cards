@@ -53,11 +53,11 @@ export function AddCard() {
       
       <HeaderStrip
         title='Sessions'
-        button={<Button text='Back' onClick={() => navigate('/')} />}
+        button={<Button text='Back' onClick={back} />}
       />
       
       <div className={s.layout}>
-        <FormBase onSubmit={submit}>
+        <FormBase onSubmit={submit} glass>
           {titleField}
           {descriptionField}
           {typeField}

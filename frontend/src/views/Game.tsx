@@ -13,19 +13,13 @@ import { NotFound } from './NotFound';
 export function Game() {
   const s = useStyles();
   const gameName = decodeURIComponent(useParams().game ?? '');
-  const sessionName = decodeURIComponent(useParams().session ?? '');
   const games = useSelector((state: RootState) => state.games);
   const game = games.find(x => x.name === gameName);
-  const sessions = useSelector((state: RootState) => state.sessions);
-  const session = sessions.find(x => x.name === sessionName);
   const cards = useSelector((state: RootState) => state.cards)
     .filter(card => card.game === game?.name);
-  
-  const deck = session?.deck.map(x => cards.find(y => y.title === x));
-  const discard = session?.discard.map(x => cards.find(y => y.title === x));
 
   const [usedCards, setUsedCards] = useState([] as CardType[]);
-  const [unusedCards, setUnusedCards] = useState(session?.deck ?? []);
+  const [unusedCards, setUnusedCards] = useState(cards);
   const [currentCard, setCurrentCard] = useState<CardType | undefined>(undefined);
 
   useEffect(() => {
@@ -34,15 +28,15 @@ export function Game() {
 
   const newCard = () => {
     const random = Math.floor(Math.random() * unusedCards.length);
-    // setCurrentCard(unusedCards[random]);
-    // setUsedCards([...usedCards, unusedCards[random]]);
+    setCurrentCard(unusedCards[random]);
+    setUsedCards([...usedCards, unusedCards[random]]);
     setUnusedCards(unusedCards.filter((_, i) => i !== random));
   };
   
   const reset = () => {
     setCurrentCard(undefined);
     setUsedCards([]);
-    // setUnusedCards(cards);
+    setUnusedCards(cards);
   };
 
   if (!game)
@@ -71,7 +65,9 @@ const useStyles = createUseStyles({
   },
 
   box: {
-    backgroundColor: '#fff',
+    backgroundColor: '#fff5',
+    backdropFilter: 'blur(5px)',
+    color: '#333',
     borderRadius: '10px',
     boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
     padding: '20px',

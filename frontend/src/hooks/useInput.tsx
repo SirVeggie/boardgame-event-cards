@@ -21,7 +21,7 @@ export function useInput(label: string, type?: string, className?: string) {
   const id = uuid();
   const field = (
     <div className={s.input}>
-      <label htmlFor={id}>{label}</label><br />
+      <label htmlFor={id}>{label}</label>
       {type === 'textarea' ? <textarea
         id={id}
         onChange={onChange}
@@ -47,7 +47,7 @@ const useStyles = createUseStyles({
   input: {
     '& > :where(textarea, input)': {
       borderRadius: '3px',
-      border: '1px solid #ccc',
+      border: '1px solid #cccc',
       width: '200px',
       transition: 'border 200ms',
       boxSizing: 'border-box',
@@ -65,6 +65,11 @@ const useStyles = createUseStyles({
 
     '& > :where(input)': {
       height: '25px',
+    },
+    
+    '& > :where(label)': {
+      display: 'block',
+      marginBottom: '5px',
     },
   },
 });
