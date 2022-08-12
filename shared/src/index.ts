@@ -16,7 +16,6 @@ export function userError(message: string): UserError {
 
 export const cardPath = '/api/cards';
 export const gamePath = '/api/games';
-export const sessionPath = '/api/sessions';
 
 export function validateCard(card: CardType): CardType {
     const newCard = {
