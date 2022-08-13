@@ -11,6 +11,7 @@ import { removeGame } from '../tools/database';
 import { Button } from './Button';
 import { ConfirmationModal } from './ConfirmationModal';
 import { Toggle } from './Toggle';
+import cx from 'classnames';
 
 type Props = {
   game: GameInfo;
@@ -65,7 +66,7 @@ export function GameCard(p: Props) {
   };
 
   return (
-    <div className={s.back}>
+    <div className={cx(s.back, s.values)}>
       <div className={s.card}>
         <ConfirmationModal warning yesNo
           title='Delete game'
@@ -94,16 +95,22 @@ export function GameCard(p: Props) {
 }
 
 const useStyles = createUseStyles({
-  back: (p: Props) => ({
+  values: (p: Props) => ({
+    '--color': p.game.color,
+    '--shade': titleShade(p.game.color),
+    '--pointer': p.noButtons ? 'initial' : 'pointer'
+  }),
+  
+  back: {
     backdropFilter: 'blur(5px) brightness(2)',
-    boxShadow: `0px 4px 10px ${p.game.color}55`,
+    boxShadow: '0px 4px 10px var(--color)55',
     borderRadius: '10px',
     overflow: 'hidden',
     minWidth: '250px',
     flexGrow: 1,
-  }),
+  },
 
-  card: (p: Props) => ({
+  card: {
     opacity: 0.75,
     display: 'flex',
     flexDirection: 'column',
@@ -113,10 +120,11 @@ const useStyles = createUseStyles({
     '& > h1': {
       margin: 0,
       padding: '10px 15px',
-      cursor: p.noButtons ? 'initial' : 'pointer',
-      background: titleShade(p.game.color),
+      cursor: 'var(--pointer)',
+      background: 'var(--shade)',
+      filter: 'saturate(2)',
     }
-  }),
+  },
 
   stats: {
     padding: '10px',

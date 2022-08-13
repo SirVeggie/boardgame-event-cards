@@ -2,6 +2,7 @@ import React from 'react';
 import { createUseStyles } from 'react-jss';
 import { useGame } from '../hooks/useGame';
 import { contMaxWidth, titleShade } from '../tools/cssConst';
+import cx from 'classnames';
 
 type Props = {
   title: string;
@@ -13,7 +14,7 @@ export function HeaderStrip(p: Props) {
   const s = useStyles(game?.color ?? '#fff0');
 
   return (
-    <header className={s.header}>
+    <header className={cx(s.header, s.values)}>
       <h1>{p.title}</h1>
       <div className={s.inner}>
         {p.children}
@@ -23,8 +24,12 @@ export function HeaderStrip(p: Props) {
 }
 
 const useStyles = createUseStyles({
+  values: (color: string) => ({
+    '--shade': titleShade(color, '#0002'),
+  }),
+  
   header: {
-    background: (color: string) => titleShade(color, '#0002'),
+    background: 'var(--shade)',
     padding: '10px 20px',
     display: 'flex',
     alignItems: 'center',

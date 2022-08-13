@@ -55,7 +55,8 @@ export function getSessions(): Promise<PublicSession[]> {
         .catch(handleError);
 }
 
-export function createSession(session: SimpleSession): Promise<void> {
+export function createSession(session: SimpleSession): Promise<PublicSession> {
     return axios.post(sessionPath, session)
+        .then(res => res.data)
         .catch(handleError);
 }

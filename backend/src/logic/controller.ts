@@ -21,7 +21,7 @@ subscribeEvent<SessionEvent>(SESSION_EVENT, (event, ws) => {
             return sendError(ws, 'Invalid player');
         console.log(`players: ${session.players.length} - ${session.players.map(x => x.name)}`);
         const player = session.players.splice(index, 1)[0];
-        console.log(`players: ${session.players.length}`);
+        console.log(`players: ${session.players.length} - ${session.players.map(x => x.name)}`);
         player.hand.forEach(x => session.discard.push(x));
         if (session.players.length === 0)
             delete sessions[event.session];
@@ -120,6 +120,8 @@ export function addSession(session: SimpleSession) {
     };
 
     sessions[session.name] = newSession;
+    
+    return convertToPublic(newSession);
 }
 
 export function removeSession(name: string) {

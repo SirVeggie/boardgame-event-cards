@@ -50,6 +50,9 @@ export function sendError(ws: WebSocket, error: string) {
 }
 
 export function sendAll(session: string, action: (player: Actor) => WebEvent) {
+    if (!sessions[session])
+        return console.log(`Session ${session} is empty at sendAll`);
+    console.log(`Sending all players in session ${session} ${sessions[session]}`);
     // Runs conversions first before sending events to avoid sending partially if errors occur
     const messages = sessions[session].map(x => ({ actor: x, action: action(x) }));
     messages.forEach(x => x.actor.ws.send(JSON.stringify(x.action)));

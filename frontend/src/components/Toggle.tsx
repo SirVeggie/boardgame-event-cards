@@ -39,6 +39,11 @@ function calc(p: Props, max: number, wait: boolean) {
 }
 
 const useStyles = createUseStyles({
+  values: (height: string) => ({
+    '--height': height,
+    '--opacity': height !== '0px' ? 1 : 0,
+  }),
+  
   opacity: {
     transition: 'opacity 0.4s ease',
 
@@ -51,7 +56,7 @@ const useStyles = createUseStyles({
   slide: {
     overflow: 'hidden',
     transition: 'height 0.4s ease, opacity 0.2s ease',
-    height: (height: string) => height,
-    opacity: (height: string) => height !== '0px' ? 1 : 0,
+    height: 'var(--height)',
+    opacity: 'var(--opacity)',
   },
 });

@@ -8,6 +8,6 @@ sessionRouter.get('/', (req, res) => {
 });
 
 sessionRouter.post('/', (req, res) => {
-    addSession(req.body);
-    res.status(201).end();
+    const result = addSession(req.body);
+    res.status(201).send(result);
 });

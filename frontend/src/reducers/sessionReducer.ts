@@ -13,9 +13,13 @@ export const sessionSlice = createSlice({
         modifySession: (state, action: PayloadAction<PublicSession>) => {
             const index = state.findIndex(session => session.name === action.payload.name);
             state[index] = action.payload;
-        }
+        },
+        
+        addSession: (state, action: PayloadAction<PublicSession>) => {
+            state.push(action.payload);
+        },
     }
 });
 
 export const sessionReducer = sessionSlice.reducer;
-export const { setSessions, modifySession } = sessionSlice.actions;
+export const { setSessions, modifySession, addSession } = sessionSlice.actions;

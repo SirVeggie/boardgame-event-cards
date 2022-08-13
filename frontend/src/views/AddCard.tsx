@@ -54,7 +54,7 @@ export function AddCard() {
       </HeaderStrip>
 
       <div className={s.layout}>
-        <FormBase onSubmit={submit} glass>
+        <FormBase glass onSubmit={submit} className={s.form}>
           {titleField}
           {descriptionField}
           {typeField}
@@ -72,6 +72,11 @@ export function AddCard() {
 const useStyles = createUseStyles({
   container: {
     paddingBottom: 20,
+  },
+  
+  form: {
+    position: 'relative',
+    zIndex: 1,
   },
 
   layout: {

@@ -21,7 +21,7 @@ export function Card(p: Props) {
   const s = useStyles({ ...p, color: p.color ?? game?.color ?? 'grey' });
 
   return (
-    <div className={s.back}>
+    <div className={cx(s.back, s.values)}>
       <div className={cx('card', s.card, p.className)} style={p.style} onClick={p.onClick}>
         <div className={s.titleBox}>
           <h1 className={s.title}>{p.card.title || '(Empty)'}</h1>
@@ -37,27 +37,32 @@ export function Card(p: Props) {
 }
 
 const useStyles = createUseStyles({
-  back: (p: Props) => ({
+  values: (p: Props) => ({
+    '--color': p.color ?? '#000000',
+    '--shade': titleShade(p.color ?? '#000000'),
+  }),
+  
+  back: {
     backdropFilter: 'blur(7.5px) contrast(50%)',
     position: 'relative',
     minWidth: 300,
     maxWidth: 350,
     borderRadius: '10px',
     overflow: 'hidden',
-    boxShadow: `0px 3px 10px ${p.color}aa`,
+    boxShadow: '0px 3px 10px var(--color)aa',
     boxSizing: 'border-box',
     flex: '1 1 300px',
-  }),
+  },
   
-  card: (p: Props) => ({
+  card: {
     display: 'flex',
     width: '100%',
     height: '100%',
     flexDirection: 'column',
     color: '#111',
-    background: titleShade(p.color ?? 'grey'),
+    background: 'var(--shade)',
     opacity: 0.75,
-  }),
+  },
 
   titleBox: {
     display: 'flex',

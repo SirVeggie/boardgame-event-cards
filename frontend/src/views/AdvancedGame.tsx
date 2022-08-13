@@ -12,6 +12,8 @@ import { Toggle } from '../components/Toggle';
 import { useGame } from '../hooks/useGame';
 import { usePlayer } from '../hooks/usePlayer';
 import { useSession } from '../hooks/useSession';
+import { NotFound } from './NotFound';
+import cx from 'classnames';
 
 export function AdvancedGame() {
   const s = useStyles();
@@ -21,25 +23,9 @@ export function AdvancedGame() {
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
 
+  console.log(session);
+  if (!other.isValid) return <NotFound />;
   if (!game.background || !session) return <div />;
-
-  // const debug: PublicSession = {
-  //   name: 'Debug',
-  //   game: game.name,
-  //   host: 'Jack',
-  //   deckEmpty: false,
-  //   discardEmpty: false,
-  //   players: ['Jack', 'Jill', 'Joe'],
-  //   me: {
-  //     name: 'Jack',
-  //     hand: [cards[0], cards[1]],
-  //   }
-  // };
-
-  // const debugLast = {
-  //   player: 'Joe',
-  //   card: cards[4],
-  // };
 
   const onConfirm = (input: boolean) => {
     setModal(false);
@@ -63,18 +49,26 @@ export function AdvancedGame() {
 
       <ConfirmationModal yesNo
         title='Leave game?'
-        text='Are you sure you want to leave the game?'
+        text='You will lose all of your cards?'
         open={modal}
         onInput={onConfirm}
       />
     </Container>
   );
 
+  // function AllDraw() {
+  //   const s = useStyles();
+
+  //   return (
+  //     <div className={cx(s.draw, 'allDraw')} onClick={other.allDraw} />
+  //   );
+  // }
+
   function Draw() {
     const s = useStyles();
 
     return (
-      <div className={s.draw} onClick={other.draw} />
+      <div className={cx(s.draw, 'draw')} onClick={other.draw} />
     );
   }
 
@@ -147,7 +141,7 @@ const useStyles = createUseStyles({
       backgroundColor: '#aaa5',
     },
 
-    '&:after': {
+    '&::after': {
       position: 'absolute',
       display: 'flex',
       alignItems: 'center',
@@ -159,8 +153,15 @@ const useStyles = createUseStyles({
       bottom: 0,
       fontFamily: '"Font Awesome 5 Free"',
       fontWeight: 900,
-      content: '"\\e05c"',
       fontSize: 60,
+    },
+
+    '&.draw::after': {
+      content: '"\\e05c"',
+    },
+
+    '&.allDraw::after': {
+      content: '"\\e05c"',
     }
   },
 
@@ -173,7 +174,7 @@ const useStyles = createUseStyles({
   },
 
   hand: {
-    padding: '10px 30px 30px 30px',
+    padding: '10px 30px 30px 25px',
     backdropFilter: 'blur(20px) contrast(90%)',
     backgroundColor: '#0002',
     border: '1px solid #6664',
@@ -181,14 +182,14 @@ const useStyles = createUseStyles({
     marginBottom: 20,
     display: 'flex',
     flexDirection: 'column',
-    
+
     '& > span': {
       display: 'block',
       fontSize: 40,
       color: '#fffa',
       marginBottom: 10,
     },
-    
+
     '& > div': {
       display: 'flex',
       flexDirection: 'row',

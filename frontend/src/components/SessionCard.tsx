@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { PublicSession } from 'shared';
 import { useForm } from '../hooks/useForm';
 import { titleShade } from '../tools/cssConst';
+import cx from 'classnames';
 
 type Props = {
   session: PublicSession;
@@ -24,7 +25,7 @@ export function SessionCard(p: Props) {
   };
 
   return (
-    <div className={s.container}>
+    <div className={cx(s.container, s.values)}>
       {form.component}
       <div className={s.back}>
         <div className={s.card} onClick={click}>
@@ -43,6 +44,10 @@ export function SessionCard(p: Props) {
 }
 
 const useStyles = createUseStyles({
+  values: (color: string) => ({
+    '--shade': titleShade(color ?? 'grey'),
+  }),
+  
   container: {
     flex: '1 1 200px',
     minWidth: 200,
@@ -57,7 +62,7 @@ const useStyles = createUseStyles({
     backdropFilter: 'blur(7.5px) contrast(50%)',
   },
 
-  card: (color: string) => ({
+  card: {
     userSelect: 'none',
     position: 'relative',
     display: 'flex',
@@ -65,10 +70,10 @@ const useStyles = createUseStyles({
     height: '100%',
     flexDirection: 'column',
     color: '#111',
-    background: titleShade(color ?? 'grey'),
+    background: 'var(--shade)',
     opacity: 0.75,
     cursor: 'pointer',
-  }),
+  },
 
   titleBox: {
     display: 'flex',
@@ -89,7 +94,6 @@ const useStyles = createUseStyles({
     gap: '10px',
     fontSize: '1.2em',
     backgroundColor: '#fff',
-    // borderRadius: '10px',
     minHeight: '100px',
     padding: '20px',
     whiteSpace: 'pre-line',

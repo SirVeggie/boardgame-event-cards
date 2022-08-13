@@ -1,18 +1,21 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
+import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { CardType, ErrorEvent, ERROR_EVENT, GameEvent, PLAYER_EVENT, PublicSession, SESSION_EVENT, SyncEvent, SYNC_EVENT } from 'shared';
+import { RootState } from '../store';
 import { useNotification } from './useNotification';
 import { usePlayer } from './usePlayer';
 import { useSessionComms } from './useSessionComms';
 
 export function useSession() {
   const sessionName = decodeURIComponent(useParams().session ?? '');
+  const isValid = useSelector((state: RootState) => state.sessions.find(x => x.name === sessionName)) !== undefined;
   const player = usePlayer();
   const [session, setSession] = useState<PublicSession | undefined>();
   const notify = useNotification();
   const [lastPlayed, setLastPlayed] = useState<{ player: string, card: CardType | undefined; } | undefined>();
-  
-  const [sendEvent, connected] = useSessionComms(sessionName, player, event => {
+
+  const [sendEvent] = useSessionComms(sessionName, player, event => {
     if (event.type === ERROR_EVENT)
       return handleError(event);
     if (event.type === SYNC_EVENT) {
@@ -24,14 +27,6 @@ export function useSession() {
     if (card)
       setLastPlayed({ player: event.player, card });
   });
-
-  // useEffect(() => {
-  //   if (connected) {
-  //     notify.create('success', 'Connected');
-  //   } else if (!connected) {
-  //     notify.create('error', 'Disconnected from server');
-  //   }
-  // }, [connected]);
 
   const leave = () => {
     notify.create('info', 'Leaving session');
@@ -50,16 +45,10 @@ export function useSession() {
     sendEvent({ type: PLAYER_EVENT, action: 'play', player, session: sessionName, card });
   };
 
-  return { session, lastPlayed, leave, draw, discard, play } as {
-    session: PublicSession | undefined;
-    lastPlayed: typeof lastPlayed;
-    leave: () => void;
-    draw: () => void;
-    discard: (card: CardType) => void;
-    play: (card: CardType) => void;
-  };
+  // color: 'var(--color)',
+  return { session, lastPlayed, leave, draw, discard, play, isValid, isHost: session?.host === player };
 
-
+  // Child components
 
   function handleError(event: ErrorEvent) {
     notify.create('error', event.message);
@@ -81,7 +70,7 @@ export function useSession() {
 
     } else if (event.action === 'discard') {
       notify.create('info', `${event.player} discarded a card`);
-      
+
     } else if (event.action === 'play') {
       notify.create('info', `${event.player} played ${event.card!.title}`);
       return event.card;
