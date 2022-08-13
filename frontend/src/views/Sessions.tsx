@@ -31,7 +31,6 @@ export function Sessions() {
     host: { label: 'Player name', type: 'text' },
   }, data => {
     createSession({ ...data, game: game.name }).then(() => {
-      notify.create('success', 'Session created');
       navigate(`/${encodeURIComponent(game.name)}/${encodeURIComponent(data.name)}/${encodeURIComponent(data.host)}`);
     }).catch(err => {
       notify.create('error', err.error);
@@ -50,12 +49,6 @@ export function Sessions() {
 
       <div className={s.sessions}>
         {sessions.map(session => <SessionCard key={session.name} session={session} color={game.color} />)}
-        {sessions.map(session => <SessionCard key={session.name} session={session} color={game.color} />)}
-        {sessions.map(session => <SessionCard key={session.name} session={session} color={game.color} />)}
-        {sessions.map(session => <SessionCard key={session.name} session={session} color={game.color} />)}
-        {sessions.map(session => <SessionCard key={session.name} session={session} color={game.color} />)}
-        {sessions.map(session => <SessionCard key={session.name} session={session} color={game.color} />)}
-        {sessions.map(session => <SessionCard key={session.name} session={session} color={game.color} />)}
       </div>
     </Container>
   );
@@ -63,8 +56,6 @@ export function Sessions() {
 
 const useStyles = createUseStyles({
   container: {
-    paddingTop: 50,
-
     '& header button': {
       marginLeft: 10,
     }

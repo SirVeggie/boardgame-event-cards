@@ -63,7 +63,7 @@ export function sendAll(session: string, action: (player: Actor) => WebEvent) {
 
 function handleMessage(message: string, ws: WebSocket) {
     const event = JSON.parse(message) as WebEvent;
-    console.log(`Incoming event: ${event.type}`);
+    console.log(`Incoming event: ${event.type} ${(event as any).action ? `action: ${(event as any).action}` : ''}`);
 
     handleJoin(event, ws);
     actions[event.type]?.forEach(x => x(event, ws));

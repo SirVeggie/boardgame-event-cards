@@ -61,26 +61,17 @@ export type SyncEvent = {
     session: PublicSession;
 }
 
-export type SessionEvent = SessionEventCommon | SessionEventPlayer;
-
 export const SESSION_EVENT = 'session-event';
-export type SessionEventBase = GameEventBase & {
+export type SessionEvent = GameEventBase & {
     type: typeof SESSION_EVENT;
-};
-
-export type SessionEventCommon = SessionEventBase & {
-    action: 'create' | 'delete' | 'start' | 'end';
-};
-
-export type SessionEventPlayer = SessionEventBase & {
-    action: 'join' | 'leave';
+    action: 'create' | 'delete' | 'start' | 'end' | 'join' | 'leave';
 };
 
 export const PLAYER_EVENT = 'player-event';
 export type PlayerEvent = GameEventBase & {
     type: typeof PLAYER_EVENT;
     action: 'draw' | 'discard' | 'play';
-    card: string;
+    card?: CardType;
 };
 
 export const ERROR_EVENT = 'error-event';

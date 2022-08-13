@@ -10,21 +10,25 @@ subscribeEvent<SessionEvent>(SESSION_EVENT, (event, ws) => {
     if (!sessions[event.session])
         return sendError(ws, 'Invalid session');
     const session = sessions[event.session];
-    
+
     if (event.action === 'join') {
-        session.players.push({ name: event.player, hand: [] });
+        if (!session.players.some(x => x.name === event.player))
+            session.players.push({ name: event.player, hand: [] });
         sendEvent(event);
     } else if (event.action === 'leave') {
         const index = session.players.findIndex(x => x.name === event.player);
         if (index === -1)
             return sendError(ws, 'Invalid player');
+        console.log(`players: ${session.players.length} - ${session.players.map(x => x.name)}`);
         const player = session.players.splice(index, 1)[0];
+        console.log(`players: ${session.players.length}`);
         player.hand.forEach(x => session.discard.push(x));
+        if (session.players.length === 0)
+            delete sessions[event.session];
         sendEvent(event);
-    // } else if (event.action === 'start') {
-        
-    // } else if (event.action === 'end') {
-        
+
+        // } else if (event.action === 'start') {
+        // } else if (event.action === 'end') {
     }
 
     updateClients(event);
@@ -43,16 +47,18 @@ subscribeEvent<PlayerEvent>(PLAYER_EVENT, (event, ws) => {
             return sendError(ws, 'Deck is empty');
         const card: CardType = session.deck.splice(randomIndex(session.deck), 1)[0];
         player.hand.push(card);
-        sendEvent(event);
+        sendEvent({ ...event, card: card });
 
     } else if (event.action === 'discard') {
-        const cardIndex = player.hand.findIndex(x => x.title === event.card);
+        const cardIndex = player.hand.findIndex(x => x.title === event.card!.title);
         const card = player.hand.splice(cardIndex, 1)[0];
         session.discard.push(card);
         sendEvent(event);
 
     } else if (event.action === 'play') {
-        const cardIndex = player.hand.findIndex(x => x.title === event.card);
+        const cardIndex = player.hand.findIndex(x => x.title === event.card!.title);
+        if (cardIndex === -1)
+            return sendError(ws, 'You do not have that card');
         player.hand.splice(cardIndex, 1);
         sendEvent(event, true);
     }
@@ -62,6 +68,8 @@ subscribeEvent<PlayerEvent>(PLAYER_EVENT, (event, ws) => {
 
 function updateClients(source: GameEvent) {
     const session = sessions[source.session];
+    if (!session)
+        return;
     sendAll(source.session, x => {
         if (!session.players.some(y => y.name === x.player))
             throw Error('Invalid player');

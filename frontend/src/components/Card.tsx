@@ -12,6 +12,7 @@ type Props = {
   className?: string;
   style?: CSSProperties;
   children?: React.ReactNode;
+  onClick?: () => void;
 };
 
 export function Card(p: Props) {
@@ -21,7 +22,7 @@ export function Card(p: Props) {
 
   return (
     <div className={s.back}>
-      <div className={cx('card', s.card, p.className)} style={p.style}>
+      <div className={cx('card', s.card, p.className)} style={p.style} onClick={p.onClick}>
         <div className={s.titleBox}>
           <h1 className={s.title}>{p.card.title || '(Empty)'}</h1>
           <div className={s.type}>{p.card.type}</div>

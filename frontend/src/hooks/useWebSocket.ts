@@ -43,5 +43,5 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
         }
     };
 
-    return [connected, send] as [boolean, (data: any) => void];
+    return [send, connected] as [(data: any) => void, boolean];
 }

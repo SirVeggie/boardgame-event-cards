@@ -6,9 +6,9 @@ import { CardType } from 'shared/src/types';
 import { Background } from '../components/Background';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
-import { Container } from '../components/Container';
 import { RootState } from '../store';
 import { NotFound } from './NotFound';
+import cx from 'classnames';
 
 export function Game() {
   const s = useStyles();
@@ -32,7 +32,7 @@ export function Game() {
     setUsedCards([...usedCards, unusedCards[random]]);
     setUnusedCards(unusedCards.filter((_, i) => i !== random));
   };
-  
+
   const reset = () => {
     setCurrentCard(undefined);
     setUsedCards([]);
@@ -42,26 +42,41 @@ export function Game() {
   if (!game)
     return <NotFound />;
   return (
-    <Container className={s.container}>
+    <div className={s.container}>
       <Background bg={game.background} />
-      {!cards.length && <div className={s.empty}>Looks empty...</div>}
-      {(currentCard || unusedCards.length) && <div className={s.button} onClick={newCard} />}
-      {currentCard && <Card card={currentCard} />}
-      {!currentCard && unusedCards.length && <div className={s.box}>
+      {!cards.length && <div className={s.box}>Looks empty...</div>}
+
+      {!currentCard && unusedCards.length && <div className={cx(s.box, s.pointer)} onClick={newCard}>
         <h1>Click to draw a card</h1>
       </div>}
-      {!currentCard && !unusedCards.length && <div className={s.box}>
+
+      {/* {(currentCard || unusedCards.length) && <div className={s.button} onClick={newCard} />} */}
+
+      {currentCard && <Card card={currentCard} onClick={newCard} className={s.pointer} />}
+
+      {!currentCard && !unusedCards.length && <div className={cx(s.box, s.end)}>
         <h1>No more cards</h1>
         <Button text='Shuffle' onClick={reset} />
       </div>}
-    </Container>
+    </div>
   );
 }
 
 const useStyles = createUseStyles({
   container: {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    display: 'flex',
     alignItems: 'center',
-    height: '100vh',
+    justifyContent: 'center',
+  },
+
+  pointer: {
+    cursor: 'pointer',
+    userSelect: 'none',
   },
 
   box: {
@@ -71,14 +86,29 @@ const useStyles = createUseStyles({
     borderRadius: '10px',
     boxShadow: '0px 0px 10px rgba(0, 0, 0, 0.1)',
     padding: '20px',
+    userSelect: 'none',
 
     '& > h1': {
       margin: 0,
     },
-    
+
     '& > button': {
       marginTop: 10,
-    }
+    },
+  },
+  
+  end: {
+    display: 'flex',
+    alignItems: 'center',
+    userSelect: 'none',
+    
+    '& > h1': {
+      marginRight: 25,
+    },
+    
+    '& > button': {
+      margin: 0,
+    },
   },
 
   button: {

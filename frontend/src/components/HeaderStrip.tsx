@@ -11,11 +11,13 @@ type Props = {
 export function HeaderStrip(p: Props) {
   const [game] = useGame();
   const s = useStyles(game?.color ?? '#fff0');
-  
+
   return (
     <header className={s.header}>
       <h1>{p.title}</h1>
-      {p.children}
+      <div className={s.inner}>
+        {p.children}
+      </div>
     </header>
   );
 }
@@ -31,9 +33,10 @@ const useStyles = createUseStyles({
     marginTop: 50,
     transition: 'margin 0.2s ease',
     backdropFilter: 'blur(3.5px)',
+    flexWrap: 'wrap',
     
     '& :first-child': {
-      flexGrow: 1,
+      flexGrow: 10000,
     },
     
     [`@media (max-width: ${contMaxWidth})`]: {
@@ -43,5 +46,19 @@ const useStyles = createUseStyles({
     '& > h1': {
       margin: 0,
     },
-  }
+    
+  },
+  
+  inner: {
+    flexGrow: 1,
+    // width: '100%',
+    display: 'flex',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    // backgroundColor: '#fff',
+    
+    '& > button': {
+      flex: '10000 0 1px',
+    }
+  },
 });
