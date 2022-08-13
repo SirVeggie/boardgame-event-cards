@@ -26,13 +26,7 @@ function createSocketBase() {
         ws.onmessage = event => handleMessage(event.data as string, ws);
         ws.onclose = () => {
             console.log('client disconnected');
-            Object.keys(sessions).forEach(x => {
-                const index = sessions[x].findIndex(y => y.ws === ws);
-                if (index !== -1)
-                    sessions[x].splice(index, 1);
-                if (sessions[x].length === 0)
-                    delete sessions[x];
-            });
+            removeWsConnection(ws);
         };
     });
 }
@@ -44,7 +38,7 @@ export function subscribeEvent<T extends WebEvent>(event: T['type'], func: (even
 }
 
 export function sendEvent(event: GameEvent, includeSelf?: boolean) {
-    sessions[event.session].forEach(x => {
+    sessions[event.session]?.forEach(x => {
         if (x.player !== event.player || includeSelf) {
             x.ws.send(JSON.stringify(event));
         }
@@ -66,6 +60,7 @@ function handleMessage(message: string, ws: WebSocket) {
     console.log(`Incoming event: ${event.type} ${(event as any).action ? `action: ${(event as any).action}` : ''}`);
 
     handleJoin(event, ws);
+    handleLeave(event, ws);
     actions[event.type]?.forEach(x => x(event, ws));
 }
 
@@ -75,5 +70,23 @@ function handleJoin(event: WebEvent, ws: WebSocket) {
     if (!sessions[event.session])
         sessions[event.session] = [];
     sessions[event.session].push({ player: event.player, ws });
+}
+
+function handleLeave(event: WebEvent, ws: WebSocket) {
+    if (event.type !== SESSION_EVENT || event.action !== 'leave')
+        return;
+    removeWsConnection(ws);
+}
+
+function removeWsConnection(ws: WebSocket) {
+    Object.keys(sessions).forEach(x => {
+        const index = sessions[x].findIndex(y => y.ws === ws);
+        if (index !== -1)
+            sessions[x].splice(index, 1);
+        if (sessions[x].length === 0)
+            delete sessions[x];
+    });
+    
+    ws.close();
 }
 

@@ -1,6 +1,5 @@
 import { createUseStyles } from 'react-jss';
-import { useSelector } from 'react-redux';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Background } from '../components/Background';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';

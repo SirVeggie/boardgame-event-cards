@@ -8,11 +8,10 @@ import { useSessionComms } from './useSessionComms';
 export function useSession() {
   const sessionName = decodeURIComponent(useParams().session ?? '');
   const player = usePlayer();
-  const [wasConnected, setWasConnected] = useState(false);
   const [session, setSession] = useState<PublicSession | undefined>();
   const notify = useNotification();
   const [lastPlayed, setLastPlayed] = useState<{ player: string, card: CardType | undefined; } | undefined>();
-
+  
   const [sendEvent, connected] = useSessionComms(sessionName, player, event => {
     if (event.type === ERROR_EVENT)
       return handleError(event);
@@ -26,13 +25,13 @@ export function useSession() {
       setLastPlayed({ player: event.player, card });
   });
 
-  useEffect(() => {
-    if (connected && wasConnected) {
-      notify.create('success', 'Connected');
-    } else if (!connected && wasConnected) {
-      notify.create('error', 'Disconnected from server');
-    }
-  }, [connected]);
+  // useEffect(() => {
+  //   if (connected) {
+  //     notify.create('success', 'Connected');
+  //   } else if (!connected) {
+  //     notify.create('error', 'Disconnected from server');
+  //   }
+  // }, [connected]);
 
   const leave = () => {
     notify.create('info', 'Leaving session');
@@ -68,10 +67,6 @@ export function useSession() {
 
   function handleSync(event: SyncEvent) {
     setSession(event.session);
-    if (!wasConnected) {
-      notify.create('success', 'Joined server succesfully');
-      setWasConnected(true);
-    }
   }
 
   function handleEvent(event: GameEvent) {
@@ -86,8 +81,9 @@ export function useSession() {
 
     } else if (event.action === 'discard') {
       notify.create('info', `${event.player} discarded a card`);
-
+      
     } else if (event.action === 'play') {
+      notify.create('info', `${event.player} played ${event.card!.title}`);
       return event.card;
     }
   }

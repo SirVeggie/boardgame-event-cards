@@ -57,12 +57,9 @@ export function AdvancedGame() {
       </HeaderStrip>
 
       <Players players={session.players} />
-
+      <Draw />
       <RecentCard card={other.lastPlayed?.card} player={other.lastPlayed?.player} />
-
-      <div className={s.hand}>
-        <Hand cards={session.me!.hand} />
-      </div>
+      <Hand cards={session.me!.hand} />
 
       <ConfirmationModal yesNo
         title='Leave game?'
@@ -72,6 +69,14 @@ export function AdvancedGame() {
       />
     </Container>
   );
+
+  function Draw() {
+    const s = useStyles();
+
+    return (
+      <div className={s.draw} onClick={other.draw} />
+    );
+  }
 
   function RecentCard(p: { card?: CardType, player?: string; }) {
     const s = useStyles();
@@ -93,12 +98,15 @@ export function AdvancedGame() {
 
     return (
       <div className={s.hand}>
-        {p.cards.map(card => <Card key={card.title} card={card}>
-          <div className={s.card}>
-            <Button text='Play' onClick={() => other.play(card)} />
-            <Button text='Discard' onClick={() => other.discard(card)} />
-          </div>
-        </Card>)}
+        <span>My cards</span>
+        <div>
+          {p.cards.map(card => <Card key={card.title} card={card}>
+            <div className={s.card}>
+              <Button text='Play' onClick={() => other.play(card)} />
+              <Button text='Discard' onClick={() => other.discard(card)} />
+            </div>
+          </Card>)}
+        </div>
       </div>
     );
   }
@@ -120,6 +128,42 @@ const useStyles = createUseStyles({
     padding: '0 20px',
   },
 
+  draw: {
+    zIndex: 1,
+    position: 'fixed',
+    background: '#fff5',
+    backdropFilter: 'blur(10px)',
+    borderRadius: '10px 0 0 10px',
+    border: '1px solid #fff5',
+    borderWidth: '1px 0 1px 1px',
+    right: 0,
+    bottom: '20%',
+    height: 100,
+    width: 100,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s ease',
+
+    '&:hover': {
+      backgroundColor: '#aaa5',
+    },
+
+    '&:after': {
+      position: 'absolute',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff4',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      fontFamily: '"Font Awesome 5 Free"',
+      fontWeight: 900,
+      content: '"\\e05c"',
+      fontSize: 60,
+    }
+  },
+
   allcards: {
     display: 'flex',
     flexDirection: 'row',
@@ -129,12 +173,29 @@ const useStyles = createUseStyles({
   },
 
   hand: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: '10px',
-    justifyContent: 'center',
+    padding: '10px 30px 30px 30px',
+    backdropFilter: 'blur(20px) contrast(90%)',
+    backgroundColor: '#0002',
+    border: '1px solid #6664',
+    borderRadius: 20,
     marginBottom: 20,
+    display: 'flex',
+    flexDirection: 'column',
+    
+    '& > span': {
+      display: 'block',
+      fontSize: 40,
+      color: '#fffa',
+      marginBottom: 10,
+    },
+    
+    '& > div': {
+      display: 'flex',
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: '10px',
+      justifyContent: 'center',
+    },
   },
 
   card: {

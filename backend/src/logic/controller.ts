@@ -72,7 +72,7 @@ function updateClients(source: GameEvent) {
         return;
     sendAll(source.session, x => {
         if (!session.players.some(y => y.name === x.player))
-            throw Error('Invalid player');
+            throw Error('Could not find player in session');
         return ({
             type: SYNC_EVENT,
             session: {
