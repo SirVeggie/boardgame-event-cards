@@ -1,8 +1,11 @@
 import { Server } from 'http';
+import { GameEvent, SESSION_EVENT, WebEvent, wsError } from 'shared';
 import { WebSocket, WebSocketServer } from 'ws';
 
+type Actor = { player: string, ws: WebSocket; };
 let wss: WebSocketServer = null as any;
-const actions: Record<string, ((data: string, ws: WebSocket) => void)[]> = {};
+const actions: Record<WebEvent['type'], ((data: WebEvent, ws: WebSocket) => void)[]> = {} as any;
+const sessions: Record<string, Actor[]> = {};
 
 export function createSocket(port: number): void;
 export function createSocket(server: Server): void;
@@ -19,28 +22,58 @@ export function createSocket(a: number | Server) {
 function createSocketBase() {
     wss.on('connection', ws => {
         console.log('client connected');
-        ws.onclose = () => console.log('client disconnected');
+
         ws.onmessage = event => handleMessage(event.data as string, ws);
+        ws.onclose = () => {
+            console.log('client disconnected');
+            Object.keys(sessions).forEach(x => {
+                const index = sessions[x].findIndex(y => y.ws === ws);
+                if (index !== -1)
+                    sessions[x].splice(index, 1);
+                if (sessions[x].length === 0)
+                    delete sessions[x];
+            });
+        };
     });
 }
 
-export function subscribeCommand(command: string, action: (data: string, ws: WebSocket) => void): void {
-    if (!actions[command])
-        actions[command] = [];
-    actions[command].push(action);
+export function subscribeEvent<T extends WebEvent>(event: T['type'], func: (event: T, ws: WebSocket) => void): void {
+    if (!actions[event])
+        actions[event] = [];
+    actions[event].push(func as any);
 }
 
-export function sendCommand(command: string, data?: string) {
-    wss.clients.forEach(x => {
-        x.send(JSON.stringify({ [command]: data ?? '' }));
+export function sendEvent(event: GameEvent, includeSelf?: boolean) {
+    sessions[event.session].forEach(x => {
+        if (x.player !== event.player || includeSelf) {
+            x.ws.send(JSON.stringify(event));
+        }
     });
+}
+
+export function sendError(ws: WebSocket, error: string) {
+    ws.send(JSON.stringify(wsError(error)));
+}
+
+export function sendAll(session: string, action: (player: Actor) => WebEvent) {
+    // Runs conversions first before sending events to avoid sending partially if errors occur
+    const messages = sessions[session].map(x => ({ actor: x, action: action(x) }));
+    messages.forEach(x => x.actor.ws.send(JSON.stringify(x.action)));
 }
 
 function handleMessage(message: string, ws: WebSocket) {
-    const record = JSON.parse(message) as Record<string, string>;
-    console.log(`Incoming command: ${record}`);
+    const event = JSON.parse(message) as WebEvent;
+    console.log(`Incoming event: ${event.type}`);
 
-    for (const [command, data] of Object.entries(record)) {
-        actions[command]?.forEach(x => x(data, ws));
-    }
+    handleJoin(event, ws);
+    actions[event.type]?.forEach(x => x(event, ws));
 }
+
+function handleJoin(event: WebEvent, ws: WebSocket) {
+    if (event.type !== SESSION_EVENT || event.action !== 'join')
+        return;
+    if (!sessions[event.session])
+        sessions[event.session] = [];
+    sessions[event.session].push({ player: event.player, ws });
+}
+

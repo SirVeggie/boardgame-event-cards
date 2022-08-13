@@ -39,10 +39,9 @@ export function AddGame() {
     <Container className={s.container}>
       <Background bg={background} />
 
-      <HeaderStrip
-        title='Sessions'
-        button={<Button text='Back' onClick={() => navigate('/')} />}
-      />
+      <HeaderStrip title='Create Game'>
+        <Button text='Back' onClick={() => navigate('/')} />
+      </HeaderStrip>
 
       <div className={s.layout}>
         <FormBase onSubmit={submit} glass>

@@ -7,12 +7,14 @@ import { useInput } from './useInput';
 import { useSelect } from './useSelect';
 
 export type FieldInfo = {
+  label: string;
   type: string;
   className?: string;
 };
 
 export type SelectInfo = {
   type: 'select';
+  label: string;
   className?: string;
   options?: string[];
 };
@@ -23,7 +25,7 @@ export type FormError = {
 };
 
 export type FormValues<T extends string> = Record<T, string>;
-export function useForm<T extends string>(title: string, fields: Record<T, FieldInfo | SelectInfo>, onSubmit: (data: FormValues<T>) => boolean | void) {
+export function useForm<T extends string>(title: string, fields: Record<T, FieldInfo | SelectInfo>, onSubmit?: (data: FormValues<T>) => boolean | void) {
   const s = useStyles();
   // eslint-disable-next-line no-empty-function, @typescript-eslint/no-empty-function
   const [open, setOpen] = useState(false);
@@ -33,8 +35,8 @@ export function useForm<T extends string>(title: string, fields: Record<T, Field
   const states = keys.reduce((obj, key, i) => {
     const field = fields[key] as FieldInfo | SelectInfo;
     const [input] = field.type === 'select'
-      ? useSelect(key, (field as SelectInfo).options ?? [], undefined, { className: field.className, ref: i === 0 ? ref : undefined })
-      : useInput(key, field.type, undefined, { className: field.className, ref: i === 0 ? ref : undefined });
+      ? useSelect(field.label, (field as SelectInfo).options ?? [], undefined, { className: field.className, ref: i === 0 ? ref : undefined })
+      : useInput(field.label, field.type, undefined, { className: field.className, ref: i === 0 ? ref : undefined });
 
     const res = {
       ...obj,
@@ -59,7 +61,7 @@ export function useForm<T extends string>(title: string, fields: Record<T, Field
     }, {} as FormValues<T>);
 
     try {
-      onSubmit(data);
+      onSubmit?.(data);
     } catch (e) {
       return { message: '', cause: e } as FormError;
     }

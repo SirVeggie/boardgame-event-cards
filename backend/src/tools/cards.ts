@@ -6,7 +6,9 @@ const obj = {
 };
 const cardLocation = './data/cards.txt';
 
-export function getCards(): CardType[] {
+export function getCards(game?: string): CardType[] {
+    if (game)
+        return obj.cards.filter(x => x.game === game);
     return obj.cards;
 }
 

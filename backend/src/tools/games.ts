@@ -10,6 +10,13 @@ export function getGames(): GameInfo[] {
     return obj.games;
 }
 
+export function getGame(name: string): GameInfo {
+    const result = obj.games.find(x => x.name === name);
+    if (!result)
+        throw userError(`Game ${name} not found`);
+    return result;
+}
+
 export function addGame(game: GameInfo): GameInfo {
     if (obj.games.some(x => x.name === game.name))
         throw userError('Game already exists');

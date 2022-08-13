@@ -1,11 +1,12 @@
 import express from 'express';
 import cors from 'cors';
 import morgan from 'morgan';
-import { cardPath, gamePath } from 'shared';
+import { cardPath, gamePath, sessionPath } from 'shared';
 import { cardRouter } from './routers/cardRouter';
 import { gameRouter } from './routers/gameRouter';
 import { errorHandler, unknownEndpoint } from './middleware';
 import { getBuildDir } from '../tools/path';
+import { sessionRouter } from './routers/sessionRouter';
 
 export function createServer(port: number) {
     const app = express();
@@ -30,6 +31,7 @@ export function createServer(port: number) {
 
     app.use(cardPath, cardRouter);
     app.use(gamePath, gameRouter);
+    app.use(sessionPath, sessionRouter);
 
     //====| static files |====//
 

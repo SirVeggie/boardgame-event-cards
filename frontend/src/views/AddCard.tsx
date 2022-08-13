@@ -7,11 +7,11 @@ import { Card } from '../components/Card';
 import { Container } from '../components/Container';
 import { FormBase } from '../components/FormBase';
 import { HeaderStrip } from '../components/HeaderStrip';
+import { useGame } from '../hooks/useGame';
 import { useInput } from '../hooks/useInput';
 import { useNotification } from '../hooks/useNotification';
 import { useRefresh } from '../hooks/useRefresh';
 import { useSelect } from '../hooks/useSelect';
-import { RootState } from '../store';
 import { addCard } from '../tools/database';
 import { NotFound } from './NotFound';
 
@@ -19,12 +19,11 @@ export function AddCard() {
   const s = useStyles();
   const navigate = useNavigate();
   const refresh = useRefresh();
-  const gameName = useParams().game;
-  const game = useSelector((state: RootState) => state.games).find(g => g.name === gameName);
+  const [game] = useGame();
 
   const [titleField, title] = useInput('Title');
   const [descriptionField, description] = useInput('Description', 'textarea');
-  const [typeField, type] = useSelect('Type', game?.types ?? ['(Empty)']);
+  const [typeField, type] = useSelect('Category', game?.types ?? ['(Empty)']);
   const notify = useNotification();
 
   if (!game)
@@ -41,7 +40,7 @@ export function AddCard() {
       notify.create('error', err.error);
     });
   };
-  
+
   const back = () => {
     refresh();
     navigate('/');
@@ -50,12 +49,11 @@ export function AddCard() {
   return (
     <Container className={s.container}>
       <Background bg={game.background} />
-      
-      <HeaderStrip
-        title='Sessions'
-        button={<Button text='Back' onClick={back} />}
-      />
-      
+
+      <HeaderStrip title={game?.name}>
+        <Button text='Back' onClick={back} />
+      </HeaderStrip>
+
       <div className={s.layout}>
         <FormBase onSubmit={submit} glass>
           {titleField}
@@ -76,11 +74,11 @@ const useStyles = createUseStyles({
   container: {
     paddingBottom: 20,
   },
-  
+
   layout: {
     display: 'flex',
     flexWrap: 'wrap',
-    
+
     '& > :first-child': {
       marginRight: '20px',
       marginBottom: '20px'

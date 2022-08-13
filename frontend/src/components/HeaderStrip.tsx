@@ -5,7 +5,7 @@ import { contMaxWidth, titleShade } from '../tools/cssConst';
 
 type Props = {
   title: string;
-  button?: React.ReactNode;
+  children?: React.ReactNode;
 };
 
 export function HeaderStrip(p: Props) {
@@ -13,10 +13,10 @@ export function HeaderStrip(p: Props) {
   const s = useStyles(game?.color ?? '#fff0');
   
   return (
-    <div className={s.header}>
+    <header className={s.header}>
       <h1>{p.title}</h1>
-      {p.button}
-    </div>
+      {p.children}
+    </header>
   );
 }
 
@@ -26,12 +26,15 @@ const useStyles = createUseStyles({
     padding: '10px 20px',
     display: 'flex',
     alignItems: 'center',
-    justifyContent: 'space-between',
     borderRadius: '10px',
     marginBottom: 20,
     marginTop: 50,
     transition: 'margin 0.2s ease',
     backdropFilter: 'blur(3.5px)',
+    
+    '& :first-child': {
+      flexGrow: 1,
+    },
     
     [`@media (max-width: ${contMaxWidth})`]: {
       marginTop: 20,

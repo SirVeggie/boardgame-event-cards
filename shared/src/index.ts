@@ -1,7 +1,7 @@
+export * from './types';
 import { v1 } from 'uuid';
 import { CardType, GameInfo, Session } from './types';
 
-export * from './types';
 
 export class UserError extends Error {
     constructor(message: string) {
@@ -16,6 +16,7 @@ export function userError(message: string): UserError {
 
 export const cardPath = '/api/cards';
 export const gamePath = '/api/games';
+export const sessionPath = '/api/sessions';
 
 export function validateCard(card: CardType): CardType {
     const newCard = {
@@ -64,11 +65,11 @@ export function validateSession(session: Session): Session {
         name: session.name?.trim(),
         game: session.game?.trim(),
         host: session.host?.trim(),
-        deck: session.deck?.map(x => x.trim()),
-        discard: session.discard?.map(x => x.trim()),
+        deck: session.deck,
+        discard: session.discard,
         players: session.players?.map(x => ({
             name: x.name?.trim(),
-            hand: x.hand?.map(y => y.trim())
+            hand: x.hand
         }))
     };
 

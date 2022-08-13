@@ -1,16 +1,16 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { Session } from 'shared/src/types';
+import { PublicSession } from 'shared';
 
 export const sessionSlice = createSlice({
     name: 'sessions',
-    initialState: [] as Session[],
+    initialState: [] as PublicSession[],
     reducers: {
-        setSessions: (state, action: PayloadAction<Session[]>) => {
+        setSessions: (state, action: PayloadAction<PublicSession[]>) => {
             state.splice(0, state.length);
             action.payload.forEach(session => state.push(session));
         },
         
-        modifySession: (state, action: PayloadAction<Session>) => {
+        modifySession: (state, action: PayloadAction<PublicSession>) => {
             const index = state.findIndex(session => session.name === action.payload.name);
             state[index] = action.payload;
         }

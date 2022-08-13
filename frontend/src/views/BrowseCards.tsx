@@ -23,11 +23,11 @@ export function BrowseCards() {
   const [game, cards] = useGame();
   const [modal, setModal] = useState(false);
   const [modalData, setModalData] = useState('');
-  
+
   const form = useForm('Edit card', {
-    title: { type: 'text' },
-    description: { type: 'textarea' },
-    type: { type: 'select', options: game?.types ?? [] },
+    title: { label: 'Title', type: 'text' },
+    description: { label: 'Description',type: 'textarea' },
+    type: { label: 'Category', type: 'select', options: game?.types ?? [] },
   }, data => {
     updateCard({ ...data, game: game?.name ?? '' }).then(() => {
       notify.create('success', 'Card updated successfully');
@@ -78,10 +78,9 @@ export function BrowseCards() {
       </ConfirmationModal>
       <Background bg={game.background} />
 
-      <HeaderStrip
-        title={game.name}
-        button={<Button text='Back' onClick={() => navigate('/')} />}
-      />
+      <HeaderStrip title={`${game.name} Deck`}>
+        <Button text='Back' onClick={() => navigate('/')} />
+      </HeaderStrip>
 
       {!cards.length && <div className={s.empty}>Looks empty...</div>}
       <div className={s.cards}>

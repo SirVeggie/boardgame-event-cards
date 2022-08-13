@@ -1,7 +1,8 @@
 import { useDispatch } from 'react-redux';
 import { setCards } from '../reducers/cardReducer';
 import { setGames } from '../reducers/gameReducer';
-import { getCards, getGames } from '../tools/database';
+import { setSessions } from '../reducers/sessionReducer';
+import { getCards, getGames, getSessions } from '../tools/database';
 
 export function useRefresh() {
   const dispatch = useDispatch();
@@ -15,6 +16,12 @@ export function useRefresh() {
 
     getGames().then(games => {
       dispatch(setGames(games));
+    }).catch(err => {
+      console.log(err);
+    });
+    
+    getSessions().then(sessions => {
+      dispatch(setSessions(sessions));
     }).catch(err => {
       console.log(err);
     });

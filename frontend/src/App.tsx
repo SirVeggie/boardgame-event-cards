@@ -4,6 +4,7 @@ import { NotificationEmitter } from './components/NotificationEmitter';
 import { useRefresh } from './hooks/useRefresh';
 import { AddCard } from './views/AddCard';
 import { AddGame } from './views/AddGame';
+import { AdvancedGame } from './views/AdvancedGame';
 import { BrowseCards } from './views/BrowseCards';
 import { Game } from './views/Game';
 import { Games } from './views/Games';
@@ -24,7 +25,8 @@ export function App() {
         <Route path='/' element={<Games />} />
         <Route path='/new' element={<AddGame />} />
         <Route path='/:game' element={<Sessions />} />
-        <Route path='/:game/:session' element={<Game />} />
+        <Route path='/:game/basic' element={<Game />} />
+        <Route path='/:game/:session/:player' element={<AdvancedGame />} />
         <Route path='/:game/new' element={<AddCard />} />
         <Route path='/:game/cards' element={<BrowseCards />} />
         <Route path='*' element={<NotFound />} />

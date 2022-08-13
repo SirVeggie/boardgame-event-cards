@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { CardType, GameInfo } from 'shared/src/types';
-import { cardPath, gamePath } from 'shared';
+import { cardPath, gamePath, PublicSession, sessionPath, SimpleSession } from 'shared';
 
 function handleError(reason: any): any {
     if (reason.response?.status?.toString().startsWith('4'))
@@ -46,5 +46,16 @@ export function addGame(game: GameInfo): Promise<GameInfo> {
 
 export function removeGame(name: string): Promise<void> {
     return axios.delete(`${gamePath}/${encodeURIComponent(name)}`)
+        .catch(handleError);
+}
+
+export function getSessions(): Promise<PublicSession[]> {
+    return axios.get(sessionPath)
+        .then(res => res.data)
+        .catch(handleError);
+}
+
+export function createSession(session: SimpleSession): Promise<void> {
+    return axios.post(sessionPath, session)
         .catch(handleError);
 }
