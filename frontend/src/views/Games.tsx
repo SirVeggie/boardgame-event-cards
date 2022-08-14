@@ -25,7 +25,6 @@ export function Games() {
       </Toggle>
 
       <Button text='Add Game' onClick={() => navigate('/new')} />
-      <Button text='Reaper' onClick={() => window.location.href = 'https://reaperscans.com/'} />
     </Container>
   );
 }
