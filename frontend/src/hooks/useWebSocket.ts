@@ -9,6 +9,7 @@ export function useLocalSocket(data: WebEvent, onmessage?: (data: any, ws: WebSo
 }
 
 export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onmessage?: (data: any, ws: WebSocket) => void) {
+    const [count, setCount] = useState(0);
     const [connected, setConnected] = useState(false);
     const [ws, setWS] = useState(null as unknown as WebSocket);
 
@@ -35,7 +36,18 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
             ws.onclose = null;
             ws.close();
         };
+    }, [count]);
+
+    useEffect(() => {
+        window.addEventListener('focus', fixConnection);
+        return () => window.removeEventListener('focus', fixConnection);
     }, []);
+
+    const fixConnection = () => {
+        if (ws.readyState !== WebSocket.OPEN) {
+            setCount(count + 1);
+        }
+    };
 
     const send = (data: any) => {
         if (ws) {
