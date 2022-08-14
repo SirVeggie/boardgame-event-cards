@@ -15,6 +15,7 @@ subscribeEvent<SessionEvent>(SESSION_EVENT, (event, ws) => {
         if (!session.players.some(x => x.name === event.player))
             session.players.push({ name: event.player, hand: [] });
         sendEvent(event);
+        
     } else if (event.action === 'leave') {
         const index = session.players.findIndex(x => x.name === event.player);
         if (index === -1)
@@ -26,9 +27,6 @@ subscribeEvent<SessionEvent>(SESSION_EVENT, (event, ws) => {
         if (session.players.length === 0)
             delete sessions[event.session];
         sendEvent(event);
-
-        // } else if (event.action === 'start') {
-        // } else if (event.action === 'end') {
     }
 
     updateClients(event);
@@ -59,7 +57,8 @@ subscribeEvent<PlayerEvent>(PLAYER_EVENT, (event, ws) => {
         const cardIndex = player.hand.findIndex(x => x.title === event.card!.title);
         if (cardIndex === -1)
             return sendError(ws, 'You do not have that card');
-        player.hand.splice(cardIndex, 1);
+        const card = player.hand.splice(cardIndex, 1)[0];
+        session.playHistory.push({ card, player: event.player });
         sendEvent(event, true);
     }
 
@@ -99,7 +98,8 @@ function convertToPublic(session: Session): PublicSession {
         host: session.host,
         players: session.players.map(x => x.name),
         deckEmpty: session.deck.length === 0,
-        discardEmpty: session.discard.length === 0
+        discardEmpty: session.discard.length === 0,
+        playHistory: session.playHistory,
     };
 }
 
@@ -111,6 +111,7 @@ export function addSession(session: SimpleSession) {
         ...session,
         deck: getCards(getGame(session.game).name),
         discard: [],
+        playHistory: [],
         players: [
             {
                 name: session.host,

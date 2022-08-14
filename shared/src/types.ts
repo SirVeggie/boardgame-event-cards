@@ -13,13 +13,14 @@ export type CardType = {
     description: string;
 };
 
-export type SimpleSession = Omit<Session, 'deck' | 'discard' | 'players'>;
+export type SimpleSession = Omit<Session, 'deck' | 'discard' | 'players' | 'playHistory'>;
 export type Session = {
     name: string;
     game: string;
     host: string;
     deck: CardType[];
     discard: CardType[];
+    playHistory: { player: string, card: CardType; }[];
     players: Player[];
 };
 
@@ -29,6 +30,7 @@ export type PublicSession = {
     host: string;
     deckEmpty: boolean;
     discardEmpty: boolean;
+    playHistory: { player: string, card: CardType; }[];
     players: string[];
     me?: Player;
 };
@@ -59,7 +61,7 @@ export const SYNC_EVENT = 'sync-event';
 export type SyncEvent = {
     type: typeof SYNC_EVENT;
     session: PublicSession;
-}
+};
 
 export const SESSION_EVENT = 'session-event';
 export type SessionEvent = GameEventBase & {

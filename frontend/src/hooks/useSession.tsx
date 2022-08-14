@@ -13,7 +13,6 @@ export function useSession() {
   const player = usePlayer();
   const [session, setSession] = useState<PublicSession | undefined>();
   const notify = useNotification();
-  const [lastPlayed, setLastPlayed] = useState<{ player: string, card: CardType | undefined; } | undefined>();
 
   const [sendEvent] = useSessionComms(sessionName, player, event => {
     if (event.type === ERROR_EVENT)
@@ -23,9 +22,7 @@ export function useSession() {
       return;
     }
 
-    const card = handleEvent(event);
-    if (card)
-      setLastPlayed({ player: event.player, card });
+    handleEvent(event);
   });
 
   const leave = () => {
@@ -46,7 +43,7 @@ export function useSession() {
   };
 
   // color: 'var(--color)',
-  return { session, lastPlayed, leave, draw, discard, play, isValid, isHost: session?.host === player };
+  return { session, leave, draw, discard, play, isValid, isHost: session?.host === player };
 
   // Child components
 
@@ -73,7 +70,6 @@ export function useSession() {
 
     } else if (event.action === 'play') {
       notify.create('info', `${event.player} played ${event.card!.title}`);
-      return event.card;
     }
   }
 }

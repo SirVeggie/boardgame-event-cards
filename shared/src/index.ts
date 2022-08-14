@@ -1,6 +1,6 @@
 export * from './types';
 import { v1 } from 'uuid';
-import { CardType, GameInfo, Session } from './types';
+import { CardType, GameInfo, Session, SimpleSession } from './types';
 
 
 export class UserError extends Error {
@@ -27,13 +27,13 @@ export function validateCard(card: CardType): CardType {
     };
 
     if (!newCard.title)
-        throw userError('Title cannot be empty');
+        throw userError('Card title cannot be empty');
     if (!newCard.description)
-        throw userError('Description cannot be empty');
+        throw userError('Card description cannot be empty');
     if (!newCard.game)
-        throw userError('Game cannot be empty');
+        throw userError('Card game cannot be empty');
     if (!newCard.type)
-        throw userError('Type cannot be empty');
+        throw userError('Card type cannot be empty');
 
     return newCard;
 }
@@ -47,15 +47,15 @@ export function validateGame(game: GameInfo): GameInfo {
     };
 
     if (!newGame.name)
-        throw userError('Name cannot be empty');
+        throw userError('Game name cannot be empty');
     if (!newGame.types.length)
-        throw userError('Needs at least one type');
+        throw userError('Game needs at least one type');
     if (newGame.types.some(x => !x))
-        throw userError('Types cannot be empty');
+        throw userError('Game types cannot be empty');
     if (!newGame.color)
-        throw userError('Color cannot be empty');
+        throw userError('Game color cannot be empty');
     if (!newGame.background)
-        throw userError('Background cannot be empty');
+        throw userError('Game background cannot be empty');
 
     return newGame;
 }
@@ -67,6 +67,10 @@ export function validateSession(session: Session): Session {
         host: session.host?.trim(),
         deck: session.deck,
         discard: session.discard,
+        playHistory: session.playHistory.map(x => ({
+            player: x.player.trim(),
+            card: x.card
+        })),
         players: session.players?.map(x => ({
             name: x.name?.trim(),
             hand: x.hand
@@ -97,6 +101,32 @@ export function validateSession(session: Session): Session {
         throw userError('Names cannot be empty');
     if (newSession.players.some(x => x.hand.some(y => !y)))
         throw userError('Hand cards cannot contain empty cards');
+    if (newSession.playHistory.some(x => !x))
+        throw userError('Play history cannot contain undefined cards');
+    if (newSession.playHistory.some(x => !x.player))
+        throw userError('Play history cannot contain empty players');
+
+    newSession.players.some(x => x.hand.forEach(y => validateCard(y)));
+    newSession.deck.forEach(x => validateCard(x));
+    newSession.discard.forEach(x => validateCard(x));
+    newSession.playHistory.forEach(x => validateCard(x.card));
+
+    return newSession;
+}
+
+export function validateSimpleSession(session: SimpleSession): SimpleSession {
+    const newSession = {
+        name: session.name?.trim(),
+        game: session.game?.trim(),
+        host: session.host?.trim(),
+    };
+
+    if (!newSession.name)
+        throw userError('Name cannot be empty');
+    if (!newSession.game)
+        throw userError('Game cannot be empty');
+    if (!newSession.host)
+        throw userError('Host cannot be empty');
 
     return newSession;
 }
@@ -108,6 +138,7 @@ export function overwriteSession(session: Partial<Session>, current: Session): S
         host: session.host ?? current.host,
         deck: session.deck ?? current.deck,
         discard: session.discard ?? current.discard,
+        playHistory: session.playHistory ?? current.playHistory,
         players: session.players ? current.players.map(x => {
             return session.players!.find(y => y.name === x.name) ?? x;
         }) : current.players

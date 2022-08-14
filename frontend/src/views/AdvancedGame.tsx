@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useNavigate } from 'react-router-dom';
 import { CardType } from 'shared';
@@ -14,6 +14,7 @@ import { usePlayer } from '../hooks/usePlayer';
 import { useSession } from '../hooks/useSession';
 import { NotFound } from './NotFound';
 import cx from 'classnames';
+import { useNotification } from '../hooks/useNotification';
 
 export function AdvancedGame() {
   const s = useStyles();
@@ -22,6 +23,29 @@ export function AdvancedGame() {
   const { session, ...other } = useSession();
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
+  const notify = useNotification();
+
+  const lastPlayed = session?.playHistory[session?.playHistory.length - 1];
+  
+  const onFocus = () => {
+    notify.create('info', 'Game focused');
+  };
+  
+  const onBlur = () => {
+    notify.create('info', 'Game blurred');
+  };
+
+  useEffect(() => {
+    window.addEventListener('focus', onFocus);
+    window.addEventListener('blur', onBlur);
+    // Calls onFocus when the window first loads
+    onFocus();
+    // Specify how to clean up after this effect:
+    return () => {
+      window.removeEventListener('focus', onFocus);
+      window.removeEventListener('blur', onBlur);
+    };
+  }, []);
 
   console.log(session);
   if (!other.isValid) return <NotFound />;
@@ -44,7 +68,7 @@ export function AdvancedGame() {
 
       <Players players={session.players} />
       <Draw />
-      <RecentCard card={other.lastPlayed?.card} player={other.lastPlayed?.player} />
+      <RecentCard card={lastPlayed?.card} player={lastPlayed?.player} />
       <Hand cards={session.me!.hand} />
 
       <ConfirmationModal yesNo
