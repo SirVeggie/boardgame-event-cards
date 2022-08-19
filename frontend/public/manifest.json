@@ -3,6 +3,11 @@
   "name": "Boardgame Event Card App",
   "icons": [
     {
+      "src": "tarot.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    },
+    {
       "src": "favicon.ico",
       "sizes": "32x32",
       "type": "image/x-icon"
