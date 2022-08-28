@@ -22,8 +22,3 @@ jobs:
           git reset --hard origin/master
           git status
           npm run prod
-    - name: Notification
-      uses: fjogeleit/http-request-action@v1
-      with:
-        url: '${{ secrets.NOTIFY_URL }}Card%20app%20deployed'
-        method: 'GET'
