@@ -1,5 +1,6 @@
 module.exports = {
-  apps : [{
+  apps: [{
+    name: 'event-cards',
     script: 'build/index.js'
   }]
 };
