@@ -8,7 +8,9 @@
     "stop": "cd backend && npm stop",
     "install": "cd shared && npm i && cd ../backend && npm i && cd ../frontend && npm i",
     "build": "cd shared && npm run build && cd ../backend && npm run build && cd ../frontend && npm run build",
+    "fetch": "git fetch --all && git reset --hard origin/master",
     "prod": "npm i --omit=dev && npm run build && npm start",
+    "deploy": "npm run fetch && npm run prod",
     "backup": "rsync -a --delete backend/build/ backup",
     "rollback": "rsync -a --delete backup/ backend/build && npm start",
     "lint": "cd backend && npm run lint && cd ../frontend && npm run lint && cd ../shared && npm run lint"
