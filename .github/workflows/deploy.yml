@@ -17,8 +17,5 @@ jobs:
         password: ${{ secrets.SSH_PASS }}
         port: 22
         script: |
-          cd ~/Projects/event-cards
-          git fetch
-          git reset --hard origin/master
-          git status
-          npm run prod
+          cd ~/projects/event-cards
+          npm run deploy
