@@ -1,5 +1,5 @@
 import axios from 'axios';
 
 export function pcNotification(message: string) {
-    return axios.get(`http://89.27.98.123:30000/api/notification?message=${encodeURIComponent(message)}`);
+    return axios.post('http://38.242.159.10:1000/api/notification', { data: message });
 }
