@@ -64,6 +64,10 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
     }, [count]);
 
     useEffect(() => {
+        if ('wakeLock' in navigator)
+            notify.create('success', 'Wake lock is supported');
+        else
+            notify.create('error', 'Wake lock is not supported');
         window.addEventListener('focus', fixConnection);
         return () => window.removeEventListener('focus', fixConnection);
     }, []);
