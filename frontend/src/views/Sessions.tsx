@@ -22,6 +22,7 @@ export function Sessions() {
   const [sessions, setSessions] = useState([] as PublicSession[]);
   const navigate = useNavigate();
   const notify = useNotification();
+  
   useLocalSocket({ type: 'lobby-event', action: 'subscribe' }, (event: LobbyEvent) => {
     if (!event || event?.type !== 'lobby-event' || event.action !== 'sync')
       return;

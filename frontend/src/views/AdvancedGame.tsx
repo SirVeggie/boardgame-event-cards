@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useNavigate } from 'react-router-dom';
 import { CardType } from 'shared';
@@ -14,6 +14,8 @@ import { usePlayer } from '../hooks/usePlayer';
 import { useSession } from '../hooks/useSession';
 import { NotFound } from './NotFound';
 import cx from 'classnames';
+import noSleep from 'nosleep.js';
+import { useTouch } from '../hooks/useTouch';
 
 export function AdvancedGame() {
   const s = useStyles();
@@ -22,8 +24,24 @@ export function AdvancedGame() {
   const { session, ...other } = useSession();
   const [modal, setModal] = useState(false);
   const navigate = useNavigate();
+  const [noSleepInstance, setNoSleep] = useState<noSleep>();
+  const isMobile = useTouch();
 
   const lastPlayed = session?.playHistory[session?.playHistory.length - 1];
+  
+  useEffect(() => {
+    if (!isMobile)
+      return;
+    document.addEventListener('click', function enableNoSleep() {
+      document.removeEventListener('click', enableNoSleep);
+      setNoSleep(new noSleep());
+      noSleepInstance?.enable();
+    });
+    
+    return () => {
+      noSleepInstance?.disable();
+    };
+  }, []);
 
   console.log(session);
   if (!other.isValid) return <NotFound />;
