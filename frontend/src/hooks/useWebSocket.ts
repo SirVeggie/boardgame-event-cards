@@ -55,10 +55,10 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
         };
     }, [count]);
 
-    // useEffect(() => {
-        // window.addEventListener('focus', fixConnection);
-        // return () => window.removeEventListener('focus', fixConnection);
-    // }, []);
+    useEffect(() => {
+        window.addEventListener('focus', fixConnection);
+        return () => window.removeEventListener('focus', fixConnection);
+    }, []);
 
     return [send, connected] as [(data: any) => void, boolean];
 }
