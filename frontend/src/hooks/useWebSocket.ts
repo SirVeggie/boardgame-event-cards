@@ -13,6 +13,8 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
     const [connected, setConnected] = useState(false);
     const [ws, setWS] = useState(null as unknown as WebSocket);
 
+    console.log(ws ? 'ws is real' : 'ws is null');
+    
     const send = (data: any) => {
         if (ws) {
             ws.send(JSON.stringify(data));
