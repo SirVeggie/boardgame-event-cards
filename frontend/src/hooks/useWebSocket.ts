@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { WebEvent } from 'shared';
+import { useNotification } from './useNotification';
 
 export function useLocalSocket(data: WebEvent, onmessage?: (data: any, ws: WebSocket) => void) {
     const host = window.location.host;
@@ -12,6 +13,7 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
     const [count, setCount] = useState(0);
     const [connected, setConnected] = useState(false);
     const [ws, setWS] = useState(null as unknown as WebSocket);
+    const notify = useNotification();
 
     console.log(ws ? 'ws is real' : 'ws is null');
     
@@ -20,8 +22,11 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
             ws.send(JSON.stringify(data));
         }
     };
-
+    
     const fixConnection = () => {
+        notify.create('info', ws ? 'ws is real' : 'ws is null');
+        if (!ws)
+            console.log('ws is definitely not real');
         if (ws.readyState !== WebSocket.OPEN) {
             setCount(count + 1);
         }
@@ -37,6 +42,7 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
         };
 
         newWS.onclose = (status) => {
+            notify.create('error', 'Websocket disconnected');
             setConnected(false);
             if (status.code !== 1000) {
                 console.log(`Websocket closed with status ${status.code} - ${status.reason}`);
