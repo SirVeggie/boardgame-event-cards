@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { NotificationType } from 'shared/src/types';
+import { NotificationType } from 'shared';
 import { arrayRemove } from '../tools/utils';
 
 export const notificationSlice = createSlice({

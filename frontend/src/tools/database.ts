@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { CardType, GameInfo } from 'shared/src/types';
+import { CardType, GameInfo } from 'shared';
 import { cardPath, gamePath, PublicSession, sessionPath, SimpleSession } from 'shared';
 
 function handleError(reason: any): any {

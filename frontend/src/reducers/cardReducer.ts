@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { CardType } from 'shared/src/types';
+import { CardType } from 'shared';
 
 export const cardSlice = createSlice({
     name: 'cards',

@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { GameInfo } from 'shared/src/types';
+import { GameInfo } from 'shared';
 
 export const gameSlice = createSlice({
     name: 'games',

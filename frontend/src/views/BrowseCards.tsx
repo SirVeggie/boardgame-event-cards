@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { createUseStyles } from 'react-jss';
 import { useNavigate } from 'react-router-dom';
-import { CardType } from 'shared/src/types';
+import { CardType } from 'shared';
 import { Background } from '../components/Background';
 import { Button } from '../components/Button';
 import { Card } from '../components/Card';
