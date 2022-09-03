@@ -21,8 +21,12 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
             onOpen?.call(null, ws);
         };
 
-        ws.onclose = () => {
+        ws.onclose = (status) => {
             setConnected(false);
+            if (status.code !== 1000) {
+                console.log(`Websocket closed with status ${status.code} - ${status.reason}`);
+                fixConnection();
+            }
         };
 
         ws.onmessage = event => {
