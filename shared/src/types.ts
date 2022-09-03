@@ -81,10 +81,3 @@ export type ErrorEvent = {
     type: typeof ERROR_EVENT;
     message: string;
 };
-
-export function wsError(message: string): ErrorEvent {
-    return {
-        type: ERROR_EVENT,
-        message
-    };
-}

@@ -1,6 +1,6 @@
 export * from './types';
 import { v1 } from 'uuid';
-import { CardType, GameInfo, Session, SimpleSession } from './types';
+import { CardType, ErrorEvent, ERROR_EVENT, GameInfo, Session, SimpleSession } from './types';
 
 
 export class UserError extends Error {
@@ -12,6 +12,13 @@ export class UserError extends Error {
 
 export function userError(message: string): UserError {
     return new UserError(message);
+}
+
+export function wsError(message: string): ErrorEvent {
+    return {
+        type: ERROR_EVENT,
+        message
+    };
 }
 
 export const cardPath = '/api/cards';
