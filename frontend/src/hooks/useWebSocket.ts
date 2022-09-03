@@ -13,39 +13,11 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
     const [connected, setConnected] = useState(false);
     const [ws, setWS] = useState(null as unknown as WebSocket);
 
-    useEffect(() => {
-        const ws = new WebSocket(url);
-
-        ws.onopen = () => {
-            setConnected(true);
-            onOpen?.call(null, ws);
-        };
-
-        ws.onclose = (status) => {
-            setConnected(false);
-            if (status.code !== 1000) {
-                console.log(`Websocket closed with status ${status.code} - ${status.reason}`);
-                fixConnection();
-            }
-        };
-
-        ws.onmessage = event => {
-            onmessage?.call(null, JSON.parse(event.data), ws);
-        };
-
-        setWS(ws);
-
-        return () => {
-            ws.onmessage = null;
-            ws.onclose = null;
-            ws.close();
-        };
-    }, [count]);
-
-    useEffect(() => {
-        window.addEventListener('focus', fixConnection);
-        return () => window.removeEventListener('focus', fixConnection);
-    }, []);
+    const send = (data: any) => {
+        if (ws) {
+            ws.send(JSON.stringify(data));
+        }
+    };
 
     const fixConnection = () => {
         if (ws.readyState !== WebSocket.OPEN) {
@@ -53,11 +25,40 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
         }
     };
 
-    const send = (data: any) => {
-        if (ws) {
-            ws.send(JSON.stringify(data));
-        }
-    };
+    useEffect(() => {
+        ws?.close();
+        const newWS = new WebSocket(url);
+
+        newWS.onopen = () => {
+            setConnected(true);
+            onOpen?.call(null, newWS);
+        };
+
+        newWS.onclose = (status) => {
+            setConnected(false);
+            if (status.code !== 1000) {
+                console.log(`Websocket closed with status ${status.code} - ${status.reason}`);
+                fixConnection();
+            }
+        };
+
+        newWS.onmessage = event => {
+            onmessage?.call(null, JSON.parse(event.data), newWS);
+        };
+
+        setWS(newWS);
+
+        return () => {
+            newWS.onmessage = null;
+            newWS.onclose = null;
+            newWS.close();
+        };
+    }, [count]);
+
+    // useEffect(() => {
+        // window.addEventListener('focus', fixConnection);
+        // return () => window.removeEventListener('focus', fixConnection);
+    // }, []);
 
     return [send, connected] as [(data: any) => void, boolean];
 }
