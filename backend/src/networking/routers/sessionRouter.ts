@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { validateSimpleSession } from 'shared';
 import { addSession, getSessions } from '../../logic/controller';
+import { syncLobbies } from '../socket';
 
 export const sessionRouter = Router();
 
@@ -12,4 +13,5 @@ sessionRouter.post('/', (req, res) => {
     const val = validateSimpleSession(req.body);
     const result = addSession(val);
     res.status(201).send(result);
+    syncLobbies();
 });

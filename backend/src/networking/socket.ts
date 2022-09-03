@@ -1,11 +1,13 @@
 import { Server } from 'http';
-import { GameEvent, SESSION_EVENT, WebEvent, wsError } from 'shared';
+import { GameEvent, LobbyEvent, LOBBY_EVENT, SESSION_EVENT, WebEvent, wsError } from 'shared';
 import { WebSocket, WebSocketServer } from 'ws';
+import { getSessions } from '../logic/controller';
 
 type Actor = { player: string, ws: WebSocket; };
 let wss: WebSocketServer = null as any;
 const actions: Record<WebEvent['type'], ((data: WebEvent, ws: WebSocket) => void)[]> = {} as any;
 const sessions: Record<string, Actor[]> = {};
+const gameSubscribers: WebSocket[] = [];
 
 export function createSocket(port: number): void;
 export function createSocket(server: Server): void;
@@ -29,6 +31,17 @@ function createSocketBase() {
             removeWsConnection(ws);
         };
     });
+}
+
+function handleMessage(message: string, ws: WebSocket) {
+    const event = JSON.parse(message) as WebEvent;
+    console.log(`Incoming event: ${event.type} ${(event as any).action ? `action: ${(event as any).action}` : ''}`);
+
+    if (event.type === LOBBY_EVENT)
+        return handleLobby(event, ws);
+    handleJoin(event, ws);
+    handleLeave(event, ws);
+    actions[event.type]?.forEach(x => x(event, ws));
 }
 
 export function subscribeEvent<T extends WebEvent>(event: T['type'], func: (event: T, ws: WebSocket) => void): void {
@@ -59,13 +72,23 @@ export function sendAll(session: string, action: (player: Actor) => WebEvent) {
     messages.forEach(x => x.actor.ws.send(JSON.stringify(x.action)));
 }
 
-function handleMessage(message: string, ws: WebSocket) {
-    const event = JSON.parse(message) as WebEvent;
-    console.log(`Incoming event: ${event.type} ${(event as any).action ? `action: ${(event as any).action}` : ''}`);
+function handleLobby(event: LobbyEvent, ws: WebSocket) {
+    if (event.action === 'subscribe') {
+        gameSubscribers.push(ws);
+        syncLobbies();
+    } else if (event.action === 'unsubscribe') {
+        const index = gameSubscribers.indexOf(ws);
+        if (index !== -1)
+            gameSubscribers.splice(index, 1);
+    }
+}
 
-    handleJoin(event, ws);
-    handleLeave(event, ws);
-    actions[event.type]?.forEach(x => x(event, ws));
+export function syncLobbies() {
+    gameSubscribers.forEach(x => x.send(JSON.stringify({
+        type: LOBBY_EVENT,
+        action: 'sync',
+        sessions: getSessions()
+    })));
 }
 
 function handleJoin(event: WebEvent, ws: WebSocket) {
@@ -83,6 +106,9 @@ function handleLeave(event: WebEvent, ws: WebSocket) {
 }
 
 function removeWsConnection(ws: WebSocket) {
+    const index = gameSubscribers.indexOf(ws);
+    if (index !== -1)
+        gameSubscribers.splice(index, 1);
     Object.keys(sessions).forEach(x => {
         const index = sessions[x].findIndex(y => y.ws === ws);
         if (index !== -1)

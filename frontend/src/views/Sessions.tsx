@@ -1,7 +1,8 @@
-import { useEffect } from 'react';
+import { useState } from 'react';
 import { createUseStyles } from 'react-jss';
-import { useDispatch, useSelector } from 'react-redux';
+import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import { LobbyEvent, PublicSession } from 'shared';
 import { Background } from '../components/Background';
 import { Button } from '../components/Button';
 import { Container } from '../components/Container';
@@ -10,29 +11,22 @@ import { SessionCard } from '../components/SessionCard';
 import { useForm } from '../hooks/useForm';
 import { useGame } from '../hooks/useGame';
 import { useNotification } from '../hooks/useNotification';
-import { useRefresh } from '../hooks/useRefresh';
+import { useLocalSocket } from '../hooks/useWebSocket';
 import { addSession } from '../reducers/sessionReducer';
-import { RootState } from '../store';
 import { createSession } from '../tools/database';
 
 export function Sessions() {
   const s = useStyles();
   const dispatch = useDispatch();
-  const refresh = useRefresh();
   const [game] = useGame();
-  const sessions = useSelector((state: RootState) => state.sessions.filter(x => x.game === game.name));
+  const [sessions, setSessions] = useState([] as PublicSession[]);
   const navigate = useNavigate();
   const notify = useNotification();
-
-  useEffect(() => {
-    refresh();
-    
-    const interval = setInterval(() => {
-      refresh();
-    }, 5000);
-    
-    return () => clearInterval(interval);
-  }, []);
+  useLocalSocket({ type: 'lobby-event', action: 'subscribe' }, (event: LobbyEvent) => {
+    if (!event || event?.type !== 'lobby-event' || event.action !== 'sync')
+      return;
+    setSessions(event.sessions!.filter(x => x.game === game.name));
+  });
 
   const form = useForm('Create Session', {
     name: { label: 'Session name', type: 'text' },

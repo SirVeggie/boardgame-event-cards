@@ -1,5 +1,5 @@
 import { CardType, GameEvent, PlayerEvent, PLAYER_EVENT, PublicSession, Session, SessionEvent, SESSION_EVENT, SimpleSession, SYNC_EVENT, userError } from 'shared';
-import { sendAll, sendError, sendEvent, subscribeEvent } from '../networking/socket';
+import { sendAll, sendError, sendEvent, subscribeEvent, syncLobbies } from '../networking/socket';
 import { getCards } from '../tools/cards';
 import { getGame } from '../tools/games';
 import { randomIndex } from '../tools/utils';
@@ -27,7 +27,7 @@ export function startController() {
             console.log(`players: ${session.players.length} - ${session.players.map(x => x.name)}`);
             player.hand.forEach(x => session.discard.push(x));
             if (session.players.length === 0)
-                delete sessions[event.session];
+                removeSession(event.session);
             sendEvent(event);
         }
 
@@ -132,4 +132,5 @@ export function removeSession(name: string) {
     if (!sessions[name])
         throw userError('Session not found');
     delete sessions[name];
+    syncLobbies();
 }

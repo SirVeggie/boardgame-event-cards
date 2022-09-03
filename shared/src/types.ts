@@ -49,12 +49,19 @@ export type NotificationType = {
 
 export type NotificationClass = 'info' | 'success' | 'error';
 
-export type WebEvent = GameEvent | ErrorEvent | SyncEvent;
+export type WebEvent = GameEvent | ErrorEvent | SyncEvent | LobbyEvent;
 
 export type GameEvent = SessionEvent | PlayerEvent;
 type GameEventBase = {
     player: string;
     session: string;
+};
+
+export const LOBBY_EVENT = 'lobby-event';
+export type LobbyEvent = {
+    type: typeof LOBBY_EVENT;
+    action: 'subscribe' | 'unsubscribe' | 'sync';
+    sessions?: PublicSession[];
 };
 
 export const SYNC_EVENT = 'sync-event';

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
-import { CardType, ErrorEvent, ERROR_EVENT, GameEvent, PLAYER_EVENT, PublicSession, SESSION_EVENT, SyncEvent, SYNC_EVENT } from 'shared';
+import { CardType, ErrorEvent, ERROR_EVENT, GameEvent, LOBBY_EVENT, PLAYER_EVENT, PublicSession, SESSION_EVENT, SyncEvent, SYNC_EVENT } from 'shared';
 import { RootState } from '../store';
 import { useNotification } from './useNotification';
 import { usePlayer } from './usePlayer';
@@ -15,13 +15,12 @@ export function useSession() {
   const notify = useNotification();
 
   const [sendEvent] = useSessionComms(sessionName, player, event => {
+    if (event.type === LOBBY_EVENT)
+      return;
     if (event.type === ERROR_EVENT)
       return handleError(event);
-    if (event.type === SYNC_EVENT) {
-      handleSync(event);
-      return;
-    }
-
+    if (event.type === SYNC_EVENT)
+      return handleSync(event);
     handleEvent(event);
   });
 
