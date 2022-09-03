@@ -38,6 +38,7 @@ export function subscribeEvent<T extends WebEvent>(event: T['type'], func: (even
 }
 
 export function sendEvent(event: GameEvent, includeSelf?: boolean) {
+    console.log(`Sending event to ${event.player}: ${event.action}`);
     sessions[event.session]?.forEach(x => {
         if (x.player !== event.player || includeSelf) {
             x.ws.send(JSON.stringify(event));
@@ -52,9 +53,9 @@ export function sendError(ws: WebSocket, error: string) {
 export function sendAll(session: string, action: (player: Actor) => WebEvent) {
     if (!sessions[session])
         return console.log(`Session ${session} is empty at sendAll`);
-    console.log(`Sending all players in session ${session} ${sessions[session]}`);
     // Runs conversions first before sending events to avoid sending partially if errors occur
     const messages = sessions[session].map(x => ({ actor: x, action: action(x) }));
+    console.log(`Sending all players in session '${session}' ${messages[0].action.type}`);
     messages.forEach(x => x.actor.ws.send(JSON.stringify(x.action)));
 }
 
@@ -89,7 +90,7 @@ function removeWsConnection(ws: WebSocket) {
         if (sessions[x].length === 0)
             delete sessions[x];
     });
-    
+
     ws.close();
 }
 
