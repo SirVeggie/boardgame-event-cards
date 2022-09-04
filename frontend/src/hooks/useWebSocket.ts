@@ -1,67 +1,45 @@
 import { useEffect, useState } from 'react';
 import { WebEvent } from 'shared';
-import { useNotification } from './useNotification';
+import ReconnectingWebSocket from 'reconnecting-websocket';
 
-export function useLocalSocket(data: WebEvent, onmessage?: (data: any, ws: WebSocket) => void) {
+export function useLocalSocket(data: WebEvent, onmessage?: (data: any, ws: ReconnectingWebSocket) => void) {
     const host = window.location.host;
     const secure = window.location.protocol === 'https:' ? 's' : '';
     const url = host.includes('localhost') ? 'ws://localhost:3001' : `ws${secure}://${host}`;
     return useWebSocket(url, ws => ws.send(JSON.stringify(data)), onmessage);
 }
 
-export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onmessage?: (data: any, ws: WebSocket) => void) {
-    const [count, setCount] = useState(0);
-    const [connected, setConnected] = useState(false);
-    const [ws, setWS] = useState(null as unknown as WebSocket);
-    const notify = useNotification();
+export function useWebSocket(url: string, onOpen?: (ws: ReconnectingWebSocket) => void, onmessage?: (data: any, ws: ReconnectingWebSocket) => void) {
+    const [ws, setWS] = useState<ReconnectingWebSocket>();
     
     const send = (data: any) => {
         if (ws) {
             ws.send(JSON.stringify(data));
         }
     };
-    
-    const fixConnection = () => {
-        if (ws.readyState !== WebSocket.OPEN) {
-            setCount(count + 1);
-        }
-    };
 
     useEffect(() => {
-        ws?.close();
-        const newWS = new WebSocket(url);
+        const socket = new ReconnectingWebSocket(url);
 
-        newWS.onopen = () => {
-            setConnected(true);
-            onOpen?.call(null, newWS);
+        socket.onopen = () => {
+            onOpen?.call(null, socket);
         };
 
-        newWS.onclose = (status) => {
-            notify.create('error', 'Websocket disconnected');
-            setConnected(false);
-            if (status.code !== 1000) {
-                console.log(`Websocket closed with status ${status.code} - ${status.reason}`);
-                fixConnection();
-            }
+        socket.onmessage = event => {
+            onmessage?.call(null, JSON.parse(event.data), socket);
         };
 
-        newWS.onmessage = event => {
-            onmessage?.call(null, JSON.parse(event.data), newWS);
-        };
-
-        setWS(newWS);
+        setWS(socket);
 
         return () => {
-            newWS.onmessage = null;
-            newWS.onclose = null;
-            newWS.close();
+            socket.onmessage = null;
+            socket.onclose = null;
+            socket.close();
         };
-    }, [count]);
-
-    useEffect(() => {
-        window.addEventListener('focus', fixConnection);
-        return () => window.removeEventListener('focus', fixConnection);
     }, []);
 
-    return [send, connected] as [(data: any) => void, boolean];
+    return {
+        send,
+        isOpen: () => ws?.readyState === ws?.OPEN,
+    };
 }
