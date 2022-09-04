@@ -9,13 +9,13 @@ export function useSessionComms(session: string, player: string, callback: (data
         player
     };
     
-    const [sendData, connected] = useLocalSocket(initial, data => {
+    const ws = useLocalSocket(initial, data => {
         callback(data);
     });
     
     const send = (data: GameEvent) => {
-        sendData(data);
+        ws.send(data);
     };
     
-    return [send, connected] as [typeof send, typeof connected];
+    return ws;
 }
