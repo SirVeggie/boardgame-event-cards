@@ -14,7 +14,7 @@ export function useSession() {
   const [session, setSession] = useState<PublicSession | undefined>();
   const notify = useNotification();
 
-  const [sendEvent] = useSessionComms(sessionName, player, event => {
+  const ws = useSessionComms(sessionName, player, event => {
     if (event.type === LOBBY_EVENT)
       return;
     if (event.type === ERROR_EVENT)
@@ -26,19 +26,19 @@ export function useSession() {
 
   const leave = () => {
     notify.create('info', 'Leaving session');
-    sendEvent({ type: SESSION_EVENT, action: 'leave', session: sessionName, player });
+    ws.send({ type: SESSION_EVENT, action: 'leave', session: sessionName, player });
   };
 
   const draw = () => {
-    sendEvent({ type: PLAYER_EVENT, action: 'draw', player, session: sessionName });
+    ws.send({ type: PLAYER_EVENT, action: 'draw', player, session: sessionName });
   };
 
   const discard = (card: CardType) => {
-    sendEvent({ type: PLAYER_EVENT, action: 'discard', player, session: sessionName, card });
+    ws.send({ type: PLAYER_EVENT, action: 'discard', player, session: sessionName, card });
   };
 
   const play = (card: CardType) => {
-    sendEvent({ type: PLAYER_EVENT, action: 'play', player, session: sessionName, card });
+    ws.send({ type: PLAYER_EVENT, action: 'play', player, session: sessionName, card });
   };
 
   // color: 'var(--color)',

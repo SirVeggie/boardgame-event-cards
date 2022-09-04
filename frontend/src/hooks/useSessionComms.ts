@@ -17,5 +17,5 @@ export function useSessionComms(session: string, player: string, callback: (data
         ws.send(data);
     };
     
-    return ws;
+    return { ...ws, send };
 }
