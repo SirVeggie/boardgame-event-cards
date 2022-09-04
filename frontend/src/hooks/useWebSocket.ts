@@ -14,8 +14,6 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
     const [connected, setConnected] = useState(false);
     const [ws, setWS] = useState(null as unknown as WebSocket);
     const notify = useNotification();
-
-    console.log(ws ? 'ws is real' : 'ws is null');
     
     const send = (data: any) => {
         if (ws) {
@@ -24,9 +22,6 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
     };
     
     const fixConnection = () => {
-        notify.create('info', ws ? 'ws is real' : 'ws is null');
-        if (!ws)
-            console.log('ws is definitely not real');
         if (ws.readyState !== WebSocket.OPEN) {
             setCount(count + 1);
         }
@@ -64,10 +59,6 @@ export function useWebSocket(url: string, onOpen?: (ws: WebSocket) => void, onme
     }, [count]);
 
     useEffect(() => {
-        if ('wakeLock' in navigator)
-            notify.create('success', 'Wake lock is supported');
-        else
-            notify.create('error', 'Wake lock is not supported');
         window.addEventListener('focus', fixConnection);
         return () => window.removeEventListener('focus', fixConnection);
     }, []);
