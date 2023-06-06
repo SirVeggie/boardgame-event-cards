@@ -8,6 +8,9 @@ import { CardType } from 'shared';
 import { addCard, generateCard } from '../tools/database';
 import { useNotification } from '../hooks/useNotification';
 import { useRefresh } from '../hooks/useRefresh';
+import { useForm } from '../hooks/useForm';
+import { useGame } from '../hooks/useGame';
+import { useInput } from '../hooks/useInput';
 
 export function Generate() {
   const s = useStyles();
@@ -15,11 +18,25 @@ export function Generate() {
   const notify = useNotification();
   const refresh = useRefresh();
   const navigate = useNavigate();
-  // const games = useSelector((state: RootState) => state.games);
+  const [game] = useGame(gameName);
   const [card, setCard] = useState<CardType | undefined>();
+  const [condField, condText] = useInput('AI instruction', 'textarea', 'Please generate a new event card using these examples as a guide:');
+
+  const form = useForm('Edit card', {
+    title: { label: 'Title', type: 'text' },
+    description: { label: 'Description', type: 'textarea' },
+    type: { label: 'Category', type: 'select', options: game?.types ?? [] },
+  }, data => {
+    addCard({ ...data, game: gameName }).then(() => {
+      notify.create('success', 'Card updated successfully');
+      refresh();
+    }).catch(err => {
+      notify.create('error', err.error);
+    });
+  });
 
   const generate = async () => {
-    const newCard = await generateCard(gameName);
+    const newCard = await generateCard(gameName, condText);
     if (!newCard) {
       notify.create('error', 'Failed to generate card');
       return;
@@ -28,26 +45,33 @@ export function Generate() {
   };
 
   const add = () => {
-    if (!card) {
-      notify.create('error', 'Card is invalid');
-      return;
-    }
+    form.setOpen(true, card);
+    // if (!card) {
+    //   notify.create('error', 'Card is invalid');
+    //   return;
+    // }
 
-    addCard(card);
-    notify.create('success', 'Card added');
-    refresh();
+    // addCard(card);
+    // notify.create('success', 'Card added');
+    // refresh();
   };
 
   return (
     <Container>
       <div className={s.container}>
+        {form.component}
         <div className={s.buttons}>
           <Button text='Back' onClick={() => navigate('/')} />
           <Button text='Generate' onClick={generate} />
           <Button text='Add current' onClick={add} />
         </div>
         <div className={s.container2}>
-          {card && <Card card={card} />}
+          <div>
+            <div className={s.instruction}>
+              {condField}
+            </div>
+            {card && <Card card={card} />}
+          </div>
         </div>
       </div>
     </Container>
@@ -77,6 +101,26 @@ const useStyles = createUseStyles({
     // backgroundColor: 'blue',
     display: 'flex',
     justifyContent: 'center',
-    alignItems: 'flex-start',
+  },
+  
+  instruction: {
+    padding: '10px 10px 5px 10px',
+    backgroundColor: 'rgba(255, 255, 255, 0.5)',
+    display: 'flex',
+    borderRadius: 10,
+    marginBottom: 10,
+    
+    '& > div': {
+      width: '100%',
+      '& > label': {
+        fontSize: 20,
+        color: '#282828',
+        fontWeight: 'bold',
+      },
+      '& > textarea': {
+        minWidth: '100%',
+        minHeight: 50,
+      }
+    }
   }
 });

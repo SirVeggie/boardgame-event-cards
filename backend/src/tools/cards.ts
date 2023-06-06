@@ -42,10 +42,9 @@ const cardInstruction = 'You are a content generation AI. Generate JSON data for
     + ' Any text outside of the JSON will break the card. The JSON must be valid.';
 const cardMessage = 'Please generate a new event card using these examples as a guide:';
 
-export async function generateCard(game: string): Promise<CardType | undefined> {
+export async function generateCard(game: string, instruction?: string): Promise<CardType | undefined> {
     const cards = selectRandom(getCards(game), 10).map(x => JSON.stringify(x)).join('\n');
-    const cardJson = await singleCompletion(cardInstruction, `${cardMessage}\n${cards}`);
-    console.log(cardJson);
+    const cardJson = await singleCompletion(cardInstruction, `${instruction ?? cardMessage}\n${cards}`);
     if (!cardJson)
         throw userError('Card generation failed');
     try {

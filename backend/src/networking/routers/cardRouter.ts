@@ -28,10 +28,10 @@ cardRouter.delete('/:title', (req, res) => {
 
 
 
-cardRouter.get('/generate/:game', async (req, res) => {
+cardRouter.post('/generate/:game', async (req, res) => {
     if (!getGames().some(x => x.name === req.params.game))
         return res.status(404);
-    const card = await generateCard(decodeURIComponent(req.params.game));
+    const card = await generateCard(decodeURIComponent(req.params.game), req.body.instruction);
     if (!card)
         return res.status(500);
     res.status(200).send(card);
