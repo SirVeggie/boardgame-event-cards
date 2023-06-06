@@ -51,11 +51,11 @@ function truncateMessage(message: string) {
     return message;
 }
 
-export async function requestChatResponse(id: string, adjustMsg?: (string) => string): Promise<string> {
+export async function requestChatResponse(id: string, adjustMsg?: (msg: string) => string): Promise<string> {
     const conversation = conversationsByChatId.get(id);
 
     if (!conversation) {
-        return;
+        return '';
     }
 
     conversation.clearOlderMessages(Date.now() - messageLifetimeMs);
@@ -65,9 +65,9 @@ export async function requestChatResponse(id: string, adjustMsg?: (string) => st
     }
 
     try {
-        return await conversation.generateResponse(adjustMsg);
+        return (await conversation.generateResponse(adjustMsg)) ?? '';
     } catch (e) {
-        logger.log('Error in text generation', e);
+        console.log('Error in text generation', e);
         return 'I\'m sorry, I\'m not feeling well right now.';
     }
 }
