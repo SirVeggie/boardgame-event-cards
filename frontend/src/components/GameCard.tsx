@@ -47,6 +47,11 @@ export function GameCard(p: Props) {
     e.stopPropagation();
     navigate(`/${p.game.name}/new`);
   };
+  
+  const generate = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.stopPropagation();
+    navigate(`/${p.game.name}/generate`);
+  };
 
   const deleteGame = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.stopPropagation();
@@ -86,6 +91,7 @@ export function GameCard(p: Props) {
           <div className={s.buttons}>
             <Button text='Play' onClick={play} disabled={cards.length < 5} />
             <Button text='Add Cards' onClick={newCards} />
+            <Button text='Generate' onClick={generate} />
             <Button text='Delete' onClick={deleteGame} className={s.delete} />
           </div>
         </Toggle>

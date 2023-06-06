@@ -32,6 +32,12 @@ export function removeCard(title: string): Promise<void> {
         .catch(handleError);
 }
 
+export function generateCard(game: string): Promise<CardType> {
+    return axios.get(`${cardPath}/generate/${encodeURIComponent(game)}`)
+        .then(res => res.data)
+        .catch(handleError);
+}
+
 export function getGames(): Promise<GameInfo[]> {
     return axios.get(gamePath)
         .then(res => res.data)
