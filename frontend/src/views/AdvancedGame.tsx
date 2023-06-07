@@ -14,6 +14,7 @@ import { usePlayer } from '../hooks/usePlayer';
 import { useSession } from '../hooks/useSession';
 import { NotFound } from './NotFound';
 import cx from 'classnames';
+import { useSelect } from '../hooks/useSelect';
 
 export function AdvancedGame() {
   const s = useStyles();
@@ -21,6 +22,9 @@ export function AdvancedGame() {
   const player = usePlayer();
   const { session, ...other } = useSession();
   const [modal, setModal] = useState(false);
+  const [giveModal, setGiveModal] = useState(false);
+  const [targetPlayerField, targetPlayer] = useSelect('Target player', session?.players ?? ['(Empty)']);
+  const [giveCard, setGiveCard] = useState<CardType | undefined>(undefined);
   const navigate = useNavigate();
 
   const lastPlayed = session?.playHistory[session?.playHistory.length - 1];
@@ -37,6 +41,13 @@ export function AdvancedGame() {
     navigate(`/${encodeURIComponent(game?.name ?? '')}`);
   };
 
+  const onGive = (input: boolean) => {
+    setGiveModal(false);
+    if (!input || !giveCard) return;
+
+    other.give(giveCard, targetPlayer);
+  };
+
   return (
     <Container className={s.page}>
       <Background bg={game.background} />
@@ -45,7 +56,7 @@ export function AdvancedGame() {
       </HeaderStrip>
 
       <Players players={session.players} />
-      <Draw />
+      <SideButtons />
       <RecentCard card={lastPlayed?.card} player={lastPlayed?.player} />
       <Hand cards={session.me!.hand} />
 
@@ -55,6 +66,12 @@ export function AdvancedGame() {
         open={modal}
         onInput={onConfirm}
       />
+      <ConfirmationModal yesNo
+        title='Give card to another player?'
+        open={giveModal}
+        onInput={onGive}>
+        {targetPlayerField}
+      </ConfirmationModal>
     </Container>
   );
 
@@ -66,11 +83,14 @@ export function AdvancedGame() {
   //   );
   // }
 
-  function Draw() {
+  function SideButtons() {
     const s = useStyles();
 
     return (
-      <div className={cx(s.draw, 'draw')} onClick={other.draw} />
+      <>
+        <div className={cx(s.history, 'history')} onClick={() => { }} />
+        <div className={cx(s.draw, 'draw')} onClick={other.draw} />
+      </>
     );
   }
 
@@ -92,6 +112,11 @@ export function AdvancedGame() {
   function Hand(p: { cards: CardType[]; }) {
     const s = useStyles();
 
+    const onGiveClick = (card: CardType) => {
+      setGiveCard(card);
+      setGiveModal(true);
+    };
+
     return (
       <div className={s.hand}>
         <span>My cards</span>
@@ -99,6 +124,7 @@ export function AdvancedGame() {
           {p.cards.map(card => <Card key={card.title} card={card}>
             <div className={s.card}>
               <Button text='Play' onClick={() => other.play(card)} />
+              <Button text='Give' onClick={() => onGiveClick(card)} />
               <Button text='Discard' onClick={() => other.discard(card)} />
             </div>
           </Card>)}
@@ -165,6 +191,45 @@ const useStyles = createUseStyles({
     '&.allDraw::after': {
       content: '"\\e05c"',
     }
+  },
+
+  history: {
+    zIndex: 1,
+    position: 'fixed',
+    background: '#fff5',
+    backdropFilter: 'blur(10px)',
+    borderRadius: '10px 0 0 10px',
+    border: '1px solid #fff5',
+    borderWidth: '1px 0 1px 1px',
+    right: 0,
+    bottom: '35%',
+    height: 100,
+    width: 100,
+    cursor: 'pointer',
+    transition: 'background-color 0.2s ease',
+
+    '&:hover': {
+      backgroundColor: '#aaa5',
+    },
+
+    '&::after': {
+      position: 'absolute',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      color: '#fff4',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      fontFamily: '"Font Awesome 5 Free"',
+      fontWeight: 900,
+      fontSize: 60,
+    },
+
+    '&.history::after': {
+      content: '"\\f1da"',
+    },
   },
 
   allcards: {

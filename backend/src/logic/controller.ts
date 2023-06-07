@@ -62,6 +62,17 @@ export function startController() {
             const card = player.hand.splice(cardIndex, 1)[0];
             session.playHistory.push({ card, player: event.player });
             sendEvent(event, true);
+            
+        } else if (event.action === 'give') {
+            const cardIndex = player.hand.findIndex(x => x.title === event.card!.title);
+            if (cardIndex === -1)
+                return sendError(ws, `You (${player.name}) do not have that card (${event.card?.title})`);
+            const card = player.hand.splice(cardIndex, 1)[0];
+            const target = session.players.find(x => x.name === event.target);
+            if (!target)
+                return sendError(ws, 'Invalid target');
+            target.hand.push(card);
+            sendEvent(event, true);
         }
 
         updateClients(event);

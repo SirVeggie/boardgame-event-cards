@@ -28,7 +28,7 @@ export function Generate() {
     type: { label: 'Category', type: 'select', options: game?.types ?? [] },
   }, data => {
     addCard({ ...data, game: gameName }).then(() => {
-      notify.create('success', 'Card updated successfully');
+      notify.create('success', 'Card added successfully');
       refresh();
     }).catch(err => {
       notify.create('error', err.error);
@@ -46,14 +46,6 @@ export function Generate() {
 
   const add = () => {
     form.setOpen(true, card);
-    // if (!card) {
-    //   notify.create('error', 'Card is invalid');
-    //   return;
-    // }
-
-    // addCard(card);
-    // notify.create('success', 'Card added');
-    // refresh();
   };
 
   return (

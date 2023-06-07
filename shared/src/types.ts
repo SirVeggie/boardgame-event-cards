@@ -79,8 +79,9 @@ export type SessionEvent = GameEventBase & {
 export const PLAYER_EVENT = 'player-event';
 export type PlayerEvent = GameEventBase & {
     type: typeof PLAYER_EVENT;
-    action: 'draw' | 'discard' | 'play';
+    action: 'draw' | 'discard' | 'play' | 'give';
     card?: CardType;
+    target?: string;
 };
 
 export const ERROR_EVENT = 'error-event';

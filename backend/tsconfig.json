@@ -9,5 +9,10 @@
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "strict": true
-  }
+  },
+  "references": [
+    {
+      "path": "../shared"
+    }
+  ]
 }

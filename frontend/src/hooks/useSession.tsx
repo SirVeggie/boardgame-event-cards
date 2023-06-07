@@ -41,8 +41,12 @@ export function useSession() {
     ws.send({ type: PLAYER_EVENT, action: 'play', player, session: sessionName, card });
   };
 
+  const give = (card: CardType, target: string) => {
+    ws.send({ type: PLAYER_EVENT, action: 'give', player, target, session: sessionName, card });
+  };
+
   // color: 'var(--color)',
-  return { session, leave, draw, discard, play, isValid, isHost: session?.host === player };
+  return { session, leave, draw, discard, play, give, isValid, isHost: session?.host === player };
 
   // Child components
 
@@ -69,6 +73,9 @@ export function useSession() {
 
     } else if (event.action === 'play') {
       notify.create('info', `${event.player} played ${event.card!.title}`);
+
+    } else if (event.action === 'give') {
+      notify.create('info', `${event.player} gave a card to ${event.target}`);
     }
   }
 }
