@@ -12,6 +12,7 @@ export type FullPopupProps = {
   noButtons?: boolean;
 };
 
+// Not finished, mostly copy paste from ConfirmationModal
 export function FullPopup(p: FullPopupProps) {
   const s = useStyles();
 

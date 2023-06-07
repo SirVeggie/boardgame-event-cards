@@ -27,8 +27,6 @@ export function AdvancedGame() {
   const [giveCard, setGiveCard] = useState<CardType | undefined>(undefined);
   const navigate = useNavigate();
 
-  const lastPlayed = session?.playHistory[session?.playHistory.length - 1];
-
   console.log(session);
   if (!other.isValid) return <NotFound />;
   if (!game.background || !session) return <div />;
@@ -57,7 +55,7 @@ export function AdvancedGame() {
 
       <Players players={session.players} />
       <SideButtons />
-      <RecentCard card={lastPlayed?.card} player={lastPlayed?.player} />
+      <PlayedCards history={session?.playHistory} />
       <Hand cards={session.me!.hand} />
 
       <ConfirmationModal yesNo
@@ -88,22 +86,23 @@ export function AdvancedGame() {
 
     return (
       <>
-        <div className={cx(s.history, 'history')} onClick={() => { }} />
+        {/* <div className={cx(s.history, 'history')} onClick={() => { }} /> */}
         <div className={cx(s.draw, 'draw')} onClick={other.draw} />
       </>
     );
   }
 
-  function RecentCard(p: { card?: CardType, player?: string; }) {
+  function PlayedCards(p: { history?: { player: string, card: CardType; }[]; }) {
     const s = useStyles();
+    const reversed = [...p.history ?? []].reverse();
 
     return (
-      <Toggle on={!!p.card}>
-        <div className={s.recentCard}>
-          <div>
-            <div className={s.recentPlayer}>By {p.player ?? ''}</div>
-            <Card card={p.card!} />
-          </div>
+      <Toggle on={!!reversed.length}>
+        <div className={s.playedCards}>
+          {reversed.map(x => <div key={x.card.title}>
+            <div className={s.recentPlayer}>By {x.player}</div>
+            <Card card={x.card} />
+          </div>)}
         </div>
       </Toggle>
     );
@@ -275,13 +274,22 @@ const useStyles = createUseStyles({
     },
   },
 
-  recentCard: {
+  playedCards: {
     display: 'flex',
-    flexDirection: 'column',
+    flexDirection: 'row',
     alignItems: 'center',
-    justifyContent: 'center',
+    // justifyContent: 'center',
     marginBottom: 50,
     padding: 30,
+    overflowX: 'auto',
+    
+    '&::-webkit-scrollbar': {
+      display: 'none',
+    },
+    
+    '& > div': {
+      marginRight: 20,
+    }
   },
 
   recentPlayer: {
