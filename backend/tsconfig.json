@@ -10,9 +10,14 @@
     "forceConsistentCasingInFileNames": true,
     "strict": true
   },
-  "references": [
-    {
-      "path": "../shared"
-    }
-  ]
+  "linterOptions": {
+    "exclude": [
+      "src/**"
+    ]
+  },
+  // "references": [
+    // {
+      // "path": "../shared"
+    // }
+  // ]
 }
